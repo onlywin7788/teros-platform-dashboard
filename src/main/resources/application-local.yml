@@ -1,4 +1,0 @@
-# application-local.yml
-logging:
-  level:
-    root: info

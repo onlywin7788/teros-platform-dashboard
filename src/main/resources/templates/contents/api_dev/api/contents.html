@@ -102,12 +102,12 @@
       requestData = JSON.stringify(requestData);
 
       var method = "POST";
-      var api_url = "/v1/api";
+      var api_url = "/central-server/v1/api";
       var alert_title = "생성";
       if(update_flag == "1")
       {
         method = "PUT";
-        api_url = "/v1/api/" + update_id;
+        api_url = "/central-server/v1/api/" + update_id;
         alert_title = "수정";
       }
 
@@ -128,7 +128,7 @@
 
     function send_insert_append(lastID)
     {
-      res = requestAPI("/v1/api-path-by-api-id/" + lastID, null, "DELETE");
+      res = requestAPI("/central-server/v1/api-path-by-api-id/" + lastID, null, "DELETE");
 
       for (var i in method_menu_id_array) {
         var spanID = method_menu_id_array[i];
@@ -147,7 +147,7 @@
           ,"description" : description
         };
         requestData = JSON.stringify(requestData);
-        res = requestAPI("/v1/api-path", requestData, "POST");
+        res = requestAPI("/central-server/v1/api-path", requestData, "POST");
       }
 
     }
@@ -155,7 +155,7 @@
     function send_delete()
     {
        if (confirm("해당 API 정보를 삭제하시겠습니까?") == true) {
-           res = requestAPI("/v1/api/" + update_id, null, "DELETE");
+           res = requestAPI("/central-server/v1/api/" + update_id, null, "DELETE");
            location.href = "/api-development/api";
         }
     }
@@ -188,7 +188,7 @@
     function onCreateContents()
     {
       // 기본 API 정의 목록
-      res = requestAPI("/v1/api/" + update_id, null, "GET");
+      res = requestAPI("/central-server/v1/api/" + update_id, null, "GET");
       
       var apiName = res.data.apiName;
       var version = res.data.version;
@@ -201,7 +201,7 @@
       $("#text-api-target-url").val(targetUrl);
       
       // API PATH 정의
-      res = requestAPI("/v1/api-path-by-api-id/" + update_id, null, "GET");
+      res = requestAPI("/central-server/v1/api-path-by-api-id/" + update_id, null, "GET");
       var resList = res.list;
       
       for (var i in resList) {
@@ -270,11 +270,8 @@
         <div class="container-fluid">
           <div class="row">
             <div class="col-12">
-              <div class="card">
-                <div class="card-header">
-                  <h2 class="card-title">API 기본 정보</h2>
-                  </div>
-                <!-- /.card-header -->
+              <div class="card card-primary card-outline"> 
+
                 <div class="card-body">
 
                   <form role="form">
@@ -321,11 +318,8 @@
         <div class="container-fluid">
           <div class="row">
             <div class="col-12">
-              <div class="card">
-                <div class="card-header">
-                  <h2 class="card-title">API 세부 명세</h2>
-                </div>
-                <!-- /.card-header -->
+              <div class="card card-primary card-outline"> 
+
                 <div class="card-body">
 
                   <form role="form">
@@ -335,7 +329,7 @@
                         <span>
                           <input style="width:120px"
                             type="button"
-                            class="btn btn-info btn-lg"
+                            class="btn btn-info btn-flat"
                             id="btn-api-create"
                             value="API 경로 추가"
                             onclick="appendMethodMenu()"
@@ -373,7 +367,7 @@
             <span style="margin:0 auto; display:none;" id="span-edit">
                 <input style="width:100px"
                   type="button"
-                  class="btn btn-primary btn-lg"
+                  class="btn btn-primary btn-flat"
                   id="btn-api-create"
                   onclick="send_update()"
                   value="수정"
@@ -381,7 +375,7 @@
                 &nbsp;
                 <input style="width:100px"
                   type="button"
-                  class="btn btn-primary btn-lg"
+                  class="btn btn-primary btn-flat"
                   id="btn-api-create"
                   onclick="send_delete()"
                   value="삭제"

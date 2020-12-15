@@ -22,7 +22,7 @@
                   <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                       <li class="breadcrumb-item active">계정 관리</li>
-                      <li class="breadcrumb-item active">그룹</li>
+                      <li class="breadcrumb-item active">사용자 그룹</li>
                     </ol>
                   </nav>
 
@@ -37,17 +37,87 @@
         <!---------------------- Main content ---------------------->
         <section class="content">
           <div class="container-fluid">
+
             <div class="row">
               <div class="col-12">
-                <div class="card">
-                  <div class="card-header">
-                    <h3 class="card-title">그룹 정의</h3>
-                  </div>
-                  <!-- /.card-header -->
-                  <div class="card-body">
-                    
-                  </div>
-                  <!-- /.card-body -->
+
+                <div class="col-md-12">
+                        
+
+
+                  <div class="card card-primary card-outline">
+                    <div class="card-header">
+
+
+                        <input type="button"
+                        class="btn btn-sm btn-primary btn-flat"
+                        value="사용자 그룹 생성"
+                        data-toggle="modal"
+                        data-target="#modal-add-connection-info"/>
+
+                      
+                      <div class="card-tools">
+
+                        <div class="input-group input-group-sm">
+           
+                          <input type="text" class="form-control" placeholder="">
+                          <div class="input-group-append">
+                            <div class="btn btn-primary">
+                              <i class="fas fa-search"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- /.card-tools -->
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body table-responsive p-0">
+ 
+                      <div class="table-responsive mailbox-messages">
+                        <table class="table table-head-fixed text-nowrap table-hover">
+
+                          <thead>
+                            <tr>
+                              <td class="mailbox-subject">그룹명</td>
+                              <td class="mailbox-subject">사용자</td>
+                              <td class="mailbox-subject">정책</td>
+                              <td class="mailbox-date">설명</td>
+
+                            </tr>
+                          </thead>
+
+                          <tbody>
+
+                            <tr>
+                              <td class="mailbox-name"><a href="read-mail.html">DEV_GRP</a></td>
+                              <td class="mailbox-subject">2 Member</td>
+                              <td class="mailbox-subject">Application, Service, Developer, Monitoring</td>
+                              <td class="mailbox-date">개발자 그룹 (모니터링 권한 허용)</td>
+
+                            </tr>
+                            <tr>
+
+                              <td class="mailbox-name"><a href="read-mail.html">TEST_GRP</a></td>
+                              <td class="mailbox-subject">1 Member</td>
+                              <td class="mailbox-subject">Application, Service</td>
+                              <td class="mailbox-date">단순 테스트 용도</td>
+                            </tr>
+                            <tr>
+
+                              <td class="mailbox-name"><a href="read-mail.html">MONITORING</a></td>
+                              <td class="mailbox-subject">1 Member</td>
+                              <td class="mailbox-subject">Monitoring</td>
+                              <td class="mailbox-date">API, DATA 애플리케이션 모니터링</td>
+                            </tr>
+                                                      
+                          </tbody>
+                        </table>
+                        <!-- /.table -->
+                      </div>
+                      <!-- /.mail-box-messages -->
+                    </div>
+                    <!-- /.card-body -->
+                  <!-- /.card -->
                 </div>
                 <!-- /.card -->
               </div>

@@ -8,19 +8,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.HandlerMapping;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/v1")
+@RequestMapping(value = "/central-server/v1")
 public class RestRemoteController {
 
     @Value("${extra.param.central-server}")
@@ -32,6 +28,8 @@ public class RestRemoteController {
         String responseBody = "";
         ResponseEntity<String> responseEntity = null;
 
+        log.info("SERVER API URL : " + centralServerUrl);
+
         try {
 
             HttpMethod method = null;
@@ -39,6 +37,7 @@ public class RestRemoteController {
             String remoteHttpBody = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
             String requestUrl = centralServerUrl + (String)request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+            log.info("REQUEST API URL : " + requestUrl);
 
             // method
             if (requestMethodString.equals("GET") == true)
@@ -62,8 +61,6 @@ public class RestRemoteController {
 
             responseEntity = remoteExecute(requestUrl, method, remoteHttpHeaders, remoteHttpBody);
             responseBody = responseEntity.getBody();
-
-            log.info("BODY : " + responseBody);
 
         } catch (Exception e) {
             e.printStackTrace();

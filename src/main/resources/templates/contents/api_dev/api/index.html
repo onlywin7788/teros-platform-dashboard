@@ -11,7 +11,7 @@
       }
 
       function onCreateList() {
-        res = requestAPI("/v1/api", null, "GET");
+        res = requestAPI("/central-server/v1/api", null, "GET");
         //resData = jsonObjectParser(res);
 
         var resList = res.list;
@@ -78,43 +78,65 @@
         <!---------------------- Main content ---------------------->
         <section class="content">
           <div class="container-fluid">
+
             <div class="row">
               <div class="col-12">
-                <div class="card">
-                  <div class="card-header">
-                    <h3 class="card-title">API 정의 목록</h3>
-                  </div>
-                  <!-- /.card-header -->
-                  <div class="card-body">
-                    <span style="float: right">
-                      <div class="form-group">
-                        <input
-                          type="button"
-                          class="btn btn-primary"
-                          id="btn-api-create"
-                          value="신규 생성"
-                        />
-                      </div>
-                    </span>
 
-                    <table
-                      id="example2"
-                      class="table table-bordered table-hover"
-                    >
-                      <thead style="text-align: left">
-                        <tr>
-                          <th style="width: 10px">#</th>
-                          <th style="width: 300px">API 명</th>
-                          <th style="width: 300px">TARGET URL</th>
-                          <th style="width: 150px">생성 일시</th>
-                          <th style="width: 150px">수정 일시</th>
-                          <th>설명</th>
-                        </tr>
-                      </thead>
-                      <tbody id="tbody-api-list"></tbody>
-                    </table>
-                  </div>
-                  <!-- /.card-body -->
+                <div class="col-md-12">
+                        
+
+
+                  <div class="card card-primary card-outline">
+                    <div class="card-header">
+
+
+                        <input type="button"
+                        class="btn btn-sm btn-primary btn-flat"
+                        id="btn-api-create"
+                        value="API 신규 생성"/>
+
+                      
+                      <div class="card-tools">
+
+                        <div class="input-group input-group-sm">
+           
+                          <input type="text" class="form-control" placeholder="">
+                          <div class="input-group-append">
+                            <div class="btn btn-primary">
+                              <i class="fas fa-search"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- /.card-tools -->
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body table-responsive p-0">
+ 
+                      <div class="table-responsive mailbox-messages">
+                        <table class="table table-head-fixed text-nowrap table-hover">
+
+                          <thead>
+                            <tr>
+                              <th style="width: 10px">#</th>
+                              <td class="mailbox-subject">API 명</td>
+                              <td class="mailbox-subject">TARGET 정보</td>
+                              <td class="mailbox-subject">생성 일시</td>
+                              <td class="mailbox-date">수정 일시</td>
+                              <th>설명</th>
+                            </tr>
+                          </thead>
+
+                          <tbody id="tbody-api-list"></tbody>
+              
+                          </tbody>
+                        </table>
+                        <!-- /.table -->
+                      </div>
+                      <!-- /.mail-box-messages -->
+                    </div>
+                    <!-- /.card-body -->
+                  <!-- /.card -->
                 </div>
                 <!-- /.card -->
               </div>

@@ -1,10 +1,5 @@
 server:
   port: 38080
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
 spring:
   application:
     name: teros-platform-dashboard
@@ -22,3 +17,4 @@ spring:
 extra:
   param:
     central-server: http://localhost:38081
+    central-server-context-path: /central-server

@@ -35,9 +35,9 @@ public class APIDevPageController {
 
 
     // PAGE : API_PLAN
-    @GetMapping("/api-development/api-plan")
+    @GetMapping("/api-development/api-policy")
     public String apiPlan(Model model) {
-        return "contents/api_dev/api_plan/index";
+        return "contents/api_dev/api_policy/index";
     }
 
     // PAGE : API_DEPLOY

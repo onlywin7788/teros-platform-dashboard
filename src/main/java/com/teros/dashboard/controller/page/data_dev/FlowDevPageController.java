@@ -1,4 +1,4 @@
-package com.teros.dashboard.controller.page.flow_dev;
+package com.teros.dashboard.controller.page.data_dev;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,16 +9,16 @@ public class FlowDevPageController {
 
     @GetMapping("/flow-development/flow-design")
     public String flowDesign(Model model) {
-        return "contents/flow_dev/flow_design/index";
+        return "contents/data_dev/flow_design/index";
     }
 
     @GetMapping("/flow-development/connector")
     public String flowConnector(Model model) {
-        return "contents/flow_dev/connector/index";
+        return "contents/data_dev/connector/index";
     }
 
     @GetMapping("/flow-development/data-set")
     public String flowDataSet(Model model) {
-        return "contents/flow_dev/data_set/index";
+        return "contents/data_dev/data_set/index";
     }
 }

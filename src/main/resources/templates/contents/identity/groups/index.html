@@ -6,6 +6,10 @@
     <head>
         <script type="text/javascript">
 
+            function refreshPage(){
+                location.href = "/identity/groups";
+            }
+
             function onCreateList() {
                 res = requestAPI("/central-server/v1/user-group", null, "GET");
                 //resData = jsonObjectParser(res);
@@ -31,8 +35,8 @@
                     append += "<td>";
                     append += "<span style='cursor:pointer;' data-toggle='dropdown'><i class='fas fa-ellipsis" +
                             "-v'></i></span>";
-                    append += "<div class='dropdown-menu'><a class='dropdown-item' onclick='openModalDataUserGroup()'>수정</a>"
-                    append += "<a class='dropdown-item' href='#'>삭제</a></div>";
+                    append += "<div class='dropdown-menu'><a class='dropdown-item' onclick='openModalDataUserGroup(" + id + ")'>수정</a>"
+                    append += "<a class='dropdown-item' href='#' onclick='openModalDeleteUserGroup(" + id + ")'>삭제</a></div>";
                     append += "</td>";
                     append += "</tr>";
 
@@ -89,12 +93,25 @@
                 else 
                     lastID = res.data.userGroupId;
                 
-                location.href = "/identity/groups";
+                refreshPage();
 
             }
 
-            function openModalDataUserGroup(){
-                $("#trigger-modal-data-user-group").click();
+            function openModalDataUserGroup(id){
+                if(id == 0){
+                    $("#trigger-modal-data-user-group").click();
+                }
+                else{
+                    $("#trigger-modal-data-user-group").click();   
+                }
+            }
+
+            function openModalDeleteUserGroup(id){
+                if (confirm("해당 사용자 그룹 정보를 삭제하시겠습니까?") == true) {
+                    res = requestAPI("/central-server/v1/user-group/" + id, null, "DELETE");
+                    refreshPage();
+                }
+                
             }
 
             $(document).ready(function () {

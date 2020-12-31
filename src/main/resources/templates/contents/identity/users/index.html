@@ -6,6 +6,10 @@
     <head>
         <script type="text/javascript">
 
+            function refreshPage(){
+                location.href = "/identity/users";
+            }
+
             function onCreateList() {
                 res = requestAPI("/central-server/v1/user", null, "GET");
 
@@ -34,8 +38,8 @@
                     append += "<td>";
                     append += "<span style='cursor:pointer;' data-toggle='dropdown'><i class='fas fa-ellipsis" +
                             "-v'></i></span>";
-                    append += "<div class='dropdown-menu'><a class='dropdown-item' href='#' onclick='openModalDataUser()'>수정</a>"
-                    append += "<a class='dropdown-item' href='#'>삭제</a></div>";
+                    append += "<div class='dropdown-menu'><a class='dropdown-item' href='#' onclick='openModalDataUser(" + id + ")'>수정</a>"
+                    append += "<a class='dropdown-item' href='#' onclick='openModalDeleteUser(" + id + ")'>삭제</a></div>";
                     append += "</td>";
                     append += "</tr>";
 
@@ -97,12 +101,25 @@
                     lastID = update_id;
                 
                 //else   lastID = res.data.userId;
-
-                location.href = "/identity/users";
+                refreshPage();
+                
             }
 
-            function openModalDataUser(){
-                $("#trigger-modal-data-user").click();
+            function openModalDataUser(id){
+                if(id == 0){
+                    $("#trigger-modal-data-user").click();
+                }
+                else{
+                    $("#trigger-modal-data-user").click();   
+                }
+            }
+
+            function openModalDeleteUser(id){
+                if (confirm("해당 사용자 정보를 삭제하시겠습니까?") == true) {
+                    res = requestAPI("/central-server/v1/user/" + id, null, "DELETE");
+                    refreshPage();
+                }
+                
             }
 
             $(document).ready(function () {
@@ -253,7 +270,7 @@
                                             type="button"
                                             class="btn btn-xs btn-primary btn-flat"
                                             value="사용자 생성"
-                                            onclick="openModalDataUser()"/>
+                                            onclick="openModalDataUser(0)"/>
 
                                         <div class="card-tools">
 

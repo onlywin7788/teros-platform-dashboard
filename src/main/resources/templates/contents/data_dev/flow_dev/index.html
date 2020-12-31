@@ -168,6 +168,17 @@
                                                                             class="ml-3 mr-2" style="cursor:pointer;"
                                                                             draggable="true"
                                                                             ondragstart="drag(event)"
+                                                                            data-node="transform">
+                                                                            Transform
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <div
+                                                                            class="ml-3 mr-2" style="cursor:pointer;"
+                                                                            draggable="true"
+                                                                            ondragstart="drag(event)"
                                                                             data-node="router">
                                                                             Router
                                                                         </div>
@@ -188,6 +199,7 @@
                                                 <div class="card card-primary card-outline">
                                                     <div class="card-header">
                                                         <h3 class="card-title">디자인 팔레트</h3>
+                                                        <span style="float:right" onclick="exportFlow()">내보내기</span>
                                                     </div>
                                                     <div class="card-body p-0">
                                                         <div class="drawflow-wrapper">
@@ -225,6 +237,12 @@
     const editor = new Drawflow(id);
     editor.reroute = true;
     editor.start();
+
+    function exportFlow(){
+        var exportdata = editor.export();
+        exportdata = JSON.stringify(exportdata);
+        console.log(exportdata);
+    }
 
     // Events!
     editor.on('nodeCreated', function (id) {
@@ -444,6 +462,17 @@
             </div>
             `;
                 editor.addNode('restful', 1, 1, pos_x, pos_y, 'restful', {}, nodeContents);
+                break;
+            case 'transform':
+                var nodeContents = `
+            <div>
+                <div class="title-box">Transform</div>
+                <div class="box">
+                    <input type="button" class="btn btn-xs btn-flat" value="설정 "></input>
+                </div>
+            </div>
+            `;
+                editor.addNode('transform', 1, 1, pos_x, pos_y, 'transform', {}, nodeContents);
                 break;
             case 'router':
                 var nodeContents = `

@@ -4,21 +4,139 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     layout:decorate="~{layouts/layout}">
     <head>
-        <script type="text/javascript"></script>
+        <script type="text/javascript">
+
+            function refreshPage(){
+                location.href = "/data-development/exec-group";
+            }
+
+            function onCreateList() {
+                res = requestAPI("/central-server/v1/exec-group", null, "GET");
+                //resData = jsonObjectParser(res);
+
+                var resList = res.list;
+
+                for (var i in resList) {
+                    var id = resList[i].execGroupId;
+                    var name = resList[i].execGroupName;
+                    var description = resList[i].description;
+                    var create_time = resList[i].createDtime;
+                    var modify_time = resList[i].modifyDtime;
+
+                    var append = "";
+                    append += "<tr>";
+                    append += "<td><a href='#' data-toggle='modal' data-target='#modal-option-detail' data-backdrop='static' data-keyboard='false'>" +
+                            name + "</a></td>";
+                    append += "<td>" + create_time + "</td>";
+                    append += "<td>" + modify_time + "</td>";
+                    append += "<td>" + description + "</td>";
+                    append += "<td>";
+                    append += "<span style='cursor:pointer;' data-toggle='dropdown'><i class='fas fa-ellipsis" +
+                            "-v'></i></span>";
+                    append += "<div class='dropdown-menu'><a class='dropdown-item' onclick='openModalData(" + id + ")'>수정</a>"
+                    append += "<a class='dropdown-item' href='#' onclick='openModalDeleteData(" + id + ")'>삭제</a></div>";
+                    append += "</td>";
+                    append += "</tr>";
+
+                    $("#tbody-data-list").append(append);
+                }
+            }
+
+            function check_validation() {
+                // basic info
+
+                var checkArray = [];
+                checkArray.push("text-group-name");
+
+                var error = 0;
+                for (var i = 0; i < checkArray.length; i++) {
+                    checkId = checkArray[i];
+                    if ($("#" + checkId).val().length == 0) {
+                        error = 1;
+                    }
+
+                }
+
+                if (error == 1) 
+                    return false;
+                return true;
+            }
+
+            function dataSubmit(isUpdate) {
+                if (check_validation() == false) {
+                    alert('입력하지 않은 정보가 존재합니다.');
+                    return;
+                }
+
+                var requestData = {
+                    "execGroupName": $("#text-group-name").val(),
+                    "description": $("#text-group-description").val()
+                };
+                requestData = JSON.stringify(requestData);
+
+                var method = "POST";
+                var api_url = "/central-server/v1/exec-group";
+                alert_title = "생성";
+                if (isUpdate == "true") {
+                    method = "PUT";
+                    api_url = "/central-server/v1/exec-group/" + update_id;
+                    alert_title = "수정";
+                }
+
+                res = requestAPI(api_url, requestData, method);
+
+                lastID = 0;
+                if (isUpdate == "1") 
+                    lastID = update_id;
+                else 
+                    lastID = res.data.userGroupId;
+                
+                refreshPage();
+
+            }
+
+            function openModalData(id){
+
+                if(id == 0){
+                    $("#trigger-modal-data").click();
+                }
+                else{
+                    $("#trigger-modal-data").click();   
+                }
+            }
+
+            function openModalDeleteData(id){
+                if (confirm("해당 Flow 를 삭제하시겠습니까?") == true) {
+                    res = requestAPI("/central-server/v1/exec-group/" + id, null, "DELETE");
+                    refreshPage();
+                }
+                
+            }
+
+            $(document).ready(function () {
+                $("#btn-data-insert").click(function () {
+                    dataSubmit(false);
+                });
+
+                onCreateList();
+
+            });
+        </script>
     </head>
 
     <div layout:fragment="content">
         <div class="wrapper">
             <!-- Content Wrapper. Contains page content -->
             <div class="content-wrapper">
-                <!-- Content Header (Page header) -->
                 <nav aria-label="breadcrumb" class="mb-4">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item active" aria-current="page">Home</li>
                         <li class="breadcrumb-item active" aria-current="page">데이터 개발</li>
-                        <li class="breadcrumb-item active" aria-current="page">데이터세트</li>
+                        <li class="breadcrumb-item active" aria-current="page">실행 그룹</li>
                     </ol>
                 </nav>
+
+
 
                 <!-- option modal -->
                 <div
@@ -29,7 +147,7 @@
                     <div class="modal-dialog modal-dialog-aside" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title">사용자 옵션</h5>
+                                <h6 class="modal-title">설정</h6>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -76,17 +194,11 @@
                 <!-- modal.// -->
 
                 <!-- New Modal -->
-                <div
-                    class="modal fade"
-                    id="modal-add-user"
-                    tabindex="-1"
-                    role="dialog"
-                    data-backdrop='static'
-                    data-keyboard='false'>
+                <div class="modal fade" id="modal-data" tabindex="-1" role="dialog" data-backdrop='static' data-keyboard='false'>
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h6 class="modal-title">데이터세트 생성</h6>
+                                <h6 class="modal-title">실행 그룹 정보</h6>
                                 <button type="button" class="close" data-dismiss="modal">×</button>
                             </button>
                         </div>
@@ -96,26 +208,13 @@
                                 <div class="card-body">
 
                                     <div class="form-group input-group-sm">
-                                        <label>그룹 선택</label>
-                                        <select class="form-control" id="select-app-type">
-                                            <option>DEV-GROUP</option>
-                                            <option>TEST-GROUP</option>
-                                        </select>
+                                        <label>실행 그룹명</label>
+                                        <input type="text" class="form-control" id="text-group-name">
                                     </div>
 
                                     <div class="form-group input-group-sm">
-                                        <label>사용자명</label>
-                                        <input type="text" class="form-control" id="text-user-name">
-                                    </div>
-
-                                    <div class="form-group input-group-sm">
-                                        <label>E-mail</label>
-                                        <input type="text" class="form-control" id="text-user-email">
-                                    </div>
-
-                                    <div class="form-group input-group-sm">
-                                        <label>패스워드</label>
-                                        <input type="text" class="form-control" id="text-user-password">
+                                        <label>설명</label>
+                                        <input type="text" class="form-control" id="text-group-description">
                                     </div>
 
                                 </div>
@@ -127,12 +226,18 @@
                                 type="button"
                                 class="btn btn-secondary btn-sm btn-flat"
                                 data-dismiss="modal">닫기</button>
-                            <button type="button" class="btn btn-primary btn-sm btn-flat">확인</button>
+                            <button
+                                type="button"
+                                class="btn btn-primary btn-sm btn-flat"
+                                id="btn-data-insert">확인</button>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- trigger modal event -->
+            <input type="hidden" id="trigger-modal-data" data-toggle="modal" data-target="#modal-data"/>
+  
             <!---------------------- Main content ---------------------->
             <section class="content">
                 <div class="container-fluid">
@@ -147,10 +252,9 @@
 
                                         <input
                                             type="button"
-                                            class="btn btn-sm btn-primary btn-flat"
-                                            value="데이터세트 생성"
-                                            data-toggle="modal"
-                                            data-target="#modal-add-user"/>
+                                            class="btn btn-xs btn-primary btn-flat"
+                                            value="실행 그룹 생성"
+                                            onclick="openModalData(0)"/>
 
                                         <div class="card-tools">
 
@@ -174,61 +278,15 @@
 
                                                 <thead>
                                                     <tr>
-                                                        <td class="mailbox-subject">데이터 세트명</td>
-                                                        <td class="mailbox-subject">생성 일시</td>
-                                                        <td class="mailbox-date">수정 일시</td>
-                                                        <td class="mailbox-date">설명</td>
+                                                        <td class="mailbox-subject" style="width: 300px">실행 그룹명</td>
+                                                        <td style="width: 50px">생성 일시</td>
+                                                        <td style="width: 50px">수정 일시</td>
+                                                        <td>설명</td>
                                                         <td style="width: 10px"></td>
                                                     </tr>
                                                 </thead>
 
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="mailbox-name">Common-data-set</td>
-                                                        <td class="mailbox-subject">2020-12-16 13:00:12</td>
-                                                        <td class="mailbox-subject">2020-12-16 15:00:15</td>
-                                                        <td class="mailbox-name">공통 데이터 세트</td>
-                                                        <td>
-                                                            <span style='cursor:pointer;' data-toggle='dropdown'>
-                                                                <i class='fas fa-ellipsis-v'></i>
-                                                            </span>
-                                                            <div class='dropdown-menu'>
-                                                                <a class='dropdown-item' href='#'>수정</a>
-                                                                <a class='dropdown-item' href='#'>삭제</a>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="mailbox-name">dev-data-set-001</td>
-                                                        <td class="mailbox-subject">2020-12-16 13:00:12</td>
-                                                        <td class="mailbox-subject">2020-12-16 15:00:15</td>
-                                                        <td class="mailbox-name">개발 테스트용 데이터 세트 - 001</td>
-                                                        <td>
-                                                            <span style='cursor:pointer;' data-toggle='dropdown'>
-                                                                <i class='fas fa-ellipsis-v'></i>
-                                                            </span>
-                                                            <div class='dropdown-menu'>
-                                                                <a class='dropdown-item' href='#'>수정</a>
-                                                                <a class='dropdown-item' href='#'>삭제</a>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="mailbox-name">dev-data-set-002</td>
-                                                        <td class="mailbox-subject">2020-12-16 13:00:12</td>
-                                                        <td class="mailbox-subject">2020-12-16 15:00:15</td>
-                                                        <td class="mailbox-name">개발 테스트용 데이터 세트 - 002</td>
-                                                        <td>
-                                                            <span style='cursor:pointer;' data-toggle='dropdown'>
-                                                                <i class='fas fa-ellipsis-v'></i>
-                                                            </span>
-                                                            <div class='dropdown-menu'>
-                                                                <a class='dropdown-item' href='#'>수정</a>
-                                                                <a class='dropdown-item' href='#'>삭제</a>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
+                                                <tbody id="tbody-data-list"></tbody>
                                             </table>
                                             <!-- /.table -->
                                         </div>

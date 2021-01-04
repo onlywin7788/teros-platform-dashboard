@@ -7,16 +7,36 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class FlowDevPageController {
 
+    //exec-group
+    @GetMapping("/data-development/exec-group")
+    public String executionGroup(Model model) {
+        return "contents/data_dev/exec_group/index";
+    }
+
+    // flow-dev
     @GetMapping("/data-development/flow-dev")
-    public String flowDesign(Model model) {
+    public String flowDev(Model model) {
         return "contents/data_dev/flow_dev/index";
     }
 
+    @GetMapping("/data-development/flow-dev/create")
+    public String flowDevCreate(Model model) {
+        return "contents/data_dev/flow_dev/contents/index";
+    }
+
+    // flow-deploy
+    @GetMapping("/data-development/flow-deploy")
+    public String flowDeploy(Model model) {
+        return "contents/data_dev/flow_deploy/index";
+    }
+
+    // connector
     @GetMapping("/data-development/connector")
     public String flowConnector(Model model) {
         return "contents/data_dev/connector/index";
     }
 
+    // data-set
     @GetMapping("/data-development/data-set")
     public String flowDataSet(Model model) {
         return "contents/data_dev/data_set/index";

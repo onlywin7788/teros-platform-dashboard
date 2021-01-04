@@ -3,7 +3,130 @@
     xmlns:th="http://www.thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     layout:decorate="~{layouts/layout}">
-    <head></head>
+    <head>
+        <script type="text/javascript">
+
+            function refreshPage(){
+                location.href = "/identity/groups";
+            }
+
+            function onCreateList() {
+                res = requestAPI("/central-server/v1/user-group", null, "GET");
+                //resData = jsonObjectParser(res);
+
+                var resList = res.list;
+
+                for (var i in resList) {
+                    var id = resList[i].userGroupId;
+                    var name = resList[i].userGroupName;
+                    var description = resList[i].description;
+                    var create_time = resList[i].createDtime;
+                    var modify_time = resList[i].modifyDtime;
+
+                    var append = "";
+                    append += "<tr>";
+                    append += "<td><a href='#' data-toggle='modal' data-target='#modal-option-detail' data-backdrop='static' data-keyboard='false'>" +
+                            name + "</a></td>";
+                    append += "<td>" + create_time + "</td>";
+                    append += "<td>" + modify_time + "</td>";
+                    append += "<td>" + description + "</td>";
+                    append += "<td>";
+                    append += "<span style='cursor:pointer;' data-toggle='dropdown'><i class='fas fa-ellipsis" +
+                            "-v'></i></span>";
+                    append += "<div class='dropdown-menu'><a class='dropdown-item' onclick='openModalDataUserGroup(" + id + ")'>수정</a>"
+                    append += "<a class='dropdown-item' href='#' onclick='openModalDeleteUserGroup(" + id + ")'>삭제</a></div>";
+                    append += "</td>";
+                    append += "</tr>";
+
+                    $("#tbody-data-list").append(append);
+                }
+            }
+
+            function check_validation() {
+                // basic info
+
+                var checkArray = [];
+                checkArray.push("text-group-name");
+
+                var error = 0;
+                for (var i = 0; i < checkArray.length; i++) {
+                    checkId = checkArray[i];
+                    if ($("#" + checkId).val().length == 0) {
+                        error = 1;
+                    }
+
+                }
+
+                if (error == 1) 
+                    return false;
+                return true;
+            }
+
+            function dataSubmit(isUpdate) {
+                if (check_validation() == false) {
+                    alert('입력하지 않은 정보가 존재합니다.');
+                    return;
+                }
+
+                var requestData = {
+                    "userGroupName": $("#text-group-name").val(),
+                    "description": $("#text-group-description").val()
+                };
+                requestData = JSON.stringify(requestData);
+
+                var method = "POST";
+                var api_url = "/central-server/v1/user-group";
+                alert_title = "생성";
+                if (isUpdate == "true") {
+                    method = "PUT";
+                    api_url = "/central-server/v1/user-group/" + update_id;
+                    alert_title = "수정";
+                }
+
+                res = requestAPI(api_url, requestData, method);
+
+                lastID = 0;
+                if (isUpdate == "1") 
+                    lastID = update_id;
+                else 
+                    lastID = res.data.userGroupId;
+                
+                refreshPage();
+
+            }
+
+            function openModalDataUserGroup(id){
+                if(id == 0){
+                    $("#trigger-modal-data-user-group").click();
+                }
+                else{
+                    $("#trigger-modal-data-user-group").click();   
+                }
+            }
+
+            function openModalDeleteUserGroup(id){
+                if (confirm("해당 Flow 를 삭제하시겠습니까?") == true) {
+                    res = requestAPI("/central-server/v1/user-group/" + id, null, "DELETE");
+                    refreshPage();
+                }
+                
+            }
+
+            
+            function moveFlowDesign(){
+                location.href = "/data-development/flow-dev/create";
+            }
+
+            $(document).ready(function () {
+                $("#btn-data-insert").click(function () {
+                    dataSubmit(false);
+                });
+
+                onCreateList();
+
+            });
+        </script>
+    </head>
 
     <div layout:fragment="content">
         <div class="wrapper">
@@ -12,210 +135,68 @@
                 <nav aria-label="breadcrumb" class="mb-4">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item active" aria-current="page">Home</li>
-                        <li class="breadcrumb-item active" aria-current="page">DATA 개발</li>
-                        <li class="breadcrumb-item active" aria-current="page">Flow 개발</li>
+                        <li class="breadcrumb-item active" aria-current="page">데이터 개발</li>
+                        <li class="breadcrumb-item active" aria-current="page">플로우 개발</li>
                     </ol>
                 </nav>
 
-                <!---------------------- Main content ---------------------->
-                <section class="content">
-                    <div class="container-fluid">
+  
+            <!---------------------- Main content ---------------------->
+            <section class="content">
+                <div class="container-fluid">
 
-                        <div class="row">
-                            <div class="col-12">
+                    <div class="row">
+                        <div class="col-12">
 
-                                <div class="card">
+                            <div class="col-md-12">
 
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-2">
+                                <div class="card card-primary card-outline">
+                                    <div class="card-header">
 
-                                                <!-- /.card -->
-                                                <div class="card card-primary card-outline">
-                                                    <div class="card-header">
-                                                        <h3 class="card-title">데이터 소스</h3>
+                                        <input
+                                            type="button"
+                                            class="btn btn-xs btn-primary btn-flat"
+                                            value="플로우 생성"
+                                            onclick="moveFlowDesign()"/>
+
+                                        <div class="card-tools">
+
+                                            <div class="input-group input-group-sm">
+
+                                                <input type="text" class="form-control" placeholder="">
+                                                <div class="input-group-append">
+                                                    <div class="btn btn-primary">
+                                                        <i class="fas fa-search"></i>
                                                     </div>
-                                                    <div class="card-body p-0">
-
-                                                        <table class="table">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td style="background-color: #f4f4f4;">
-                                                                        <i class="nav-icon fas fa-database mr-2" style="font-size: 0.8rem;"></i>
-                                                                        데이터베이스
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <div
-                                                                            class="ml-3 mr-2" style="cursor:pointer;"
-                                                                            draggable="true"
-                                                                            ondragstart="drag(event)"
-                                                                            data-node="oracle">
-                                                                            Oracle Database
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <div
-                                                                            class="ml-3 mr-2" style="cursor:pointer;"
-                                                                            draggable="true"
-                                                                            ondragstart="drag(event)"
-                                                                            data-node="postgresql">
-                                                                            PostgreSQL
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <div
-                                                                            class="ml-3 mr-2" style="cursor:pointer;"
-                                                                            draggable="true"
-                                                                            ondragstart="drag(event)"
-                                                                            data-node="mariadb">
-                                                                            Mariadb
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td style="background-color: #f4f4f4;">
-                                                                        <i class="nav-icon fas fa-expand-arrows-alt mr-2" style="font-size: 0.8rem;"></i>
-                                                                        미들웨어
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <div
-                                                                            class="ml-3 mr-2" style="cursor:pointer;"
-                                                                            draggable="true"
-                                                                            ondragstart="drag(event)"
-                                                                            data-node="kafka">
-                                                                            Kafka
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <div
-                                                                            class="ml-3 mr-2" style="cursor:pointer;"
-                                                                            draggable="true"
-                                                                            ondragstart="drag(event)"
-                                                                            data-node="rabbitmq">
-                                                                            RabbitMQ
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <div
-                                                                            class="ml-3 mr-2" style="cursor:pointer;"
-                                                                            draggable="true"
-                                                                            ondragstart="drag(event)"
-                                                                            data-node="sap">
-                                                                            SAP ERP
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td style="background-color: #f4f4f4;">
-                                                                        <i class="nav-icon fas fa-random mr-2" style="font-size: 0.8rem;"></i>
-                                                                        프로토콜
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <div
-                                                                            class="ml-3 mr-2" style="cursor:pointer;"
-                                                                            draggable="true"
-                                                                            ondragstart="drag(event)"
-                                                                            data-node="restful">
-                                                                            Restful
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <div
-                                                                            class="ml-3 mr-2" style="cursor:pointer;"
-                                                                            draggable="true"
-                                                                            ondragstart="drag(event)"
-                                                                            data-node="soap">
-                                                                            SOAP
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td style="background-color: #f4f4f4;">
-                                                                        <i class="nav-icon fas fa-angle-double-right mr-2" style="font-size: 0.8rem;"></i>
-                                                                        데이터 변환
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <div
-                                                                            class="ml-3 mr-2" style="cursor:pointer;"
-                                                                            draggable="true"
-                                                                            ondragstart="drag(event)"
-                                                                            data-node="custom">
-                                                                            Custom Node
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <div
-                                                                            class="ml-3 mr-2" style="cursor:pointer;"
-                                                                            draggable="true"
-                                                                            ondragstart="drag(event)"
-                                                                            data-node="transform">
-                                                                            Transform
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <div
-                                                                            class="ml-3 mr-2" style="cursor:pointer;"
-                                                                            draggable="true"
-                                                                            ondragstart="drag(event)"
-                                                                            data-node="router">
-                                                                            Router
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-
-                                                    </div>
-                                                    <!-- /.card-body -->
                                                 </div>
-                                                <!-- /.card -->
                                             </div>
-
-                                            <!-- /.col -->
-                                            <div class="col-md-10">
-
-                                                <div class="card card-primary card-outline">
-                                                    <div class="card-header">
-                                                        <h3 class="card-title">디자인 팔레트</h3>
-                                                        <span style="float:right" onclick="exportFlow()">내보내기</span>
-                                                    </div>
-                                                    <div class="card-body p-0">
-                                                        <div class="drawflow-wrapper">
-                                                            <div id="drawflow" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-                                                        </div>
-
-                                                    </div>
-
-                                                </div>
-                                                <!-- /.card -->
-                                            </div>
-
                                         </div>
+                                        <!-- /.card-tools -->
+                                    </div>
+                                    <!-- /.card-header -->
+                                    <div class="card-body table-responsive p-0">
 
+                                        <div class="table-responsive mailbox-messages">
+                                            <table class="table table-head-fixed text-nowrap">
+
+                                                <thead>
+                                                    <tr>
+                                                        <td class="mailbox-subject" style="width: 300px">플로우명</td>
+                                                        <td style="width: 50px">생성 일시</td>
+                                                        <td style="width: 50px">수정 일시</td>
+                                                        <td>설명</td>
+                                                        <td style="width: 10px"></td>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody id="tbody-data-list"></tbody>
+                                            </table>
+                                            <!-- /.table -->
+                                        </div>
+                                        <!-- /.mail-box-messages -->
                                     </div>
                                     <!-- /.card-body -->
+                                    <!-- /.card -->
                                 </div>
                                 <!-- /.card -->
                             </div>
@@ -231,332 +212,3 @@
         </div>
     </div>
 </html>
-
-<script type="text/javascript">
-    var id = document.getElementById("drawflow");
-    const editor = new Drawflow(id);
-    editor.reroute = true;
-    editor.start();
-
-    function exportFlow(){
-        var exportdata = editor.export();
-        exportdata = JSON.stringify(exportdata);
-        console.log(exportdata);
-    }
-
-    // Events!
-    editor.on('nodeCreated', function (id) {
-        console.log("Node created " + id);
-    })
-
-    editor.on('nodeRemoved', function (id) {
-        console.log("Node removed " + id);
-    })
-
-    editor.on('nodeSelected', function (id) {
-        console.log("Node selected " + id);
-    })
-
-    editor.on('moduleCreated', function (name) {
-        console.log("Module Created " + name);
-    })
-
-    editor.on('moduleChanged', function (name) {
-        console.log("Module Changed " + name);
-    })
-
-    editor.on('connectionCreated', function (connection) {
-        console.log('Connection created');
-        console.log(connection);
-    })
-
-    editor.on('connectionRemoved', function (connection) {
-        console.log('Connection removed');
-        console.log(connection);
-    })
-
-    editor.on('mouseMove', function (position) {
-        console.log('Position mouse x:' + position.x + ' y:' + position.y);
-    })
-
-    editor.on('nodeMoved', function (id) {
-        console.log("Node moved " + id);
-    })
-
-    editor.on('zoom', function (zoom) {
-        console.log('Zoom level ' + zoom);
-    })
-
-    editor.on('translate', function (position) {
-        console.log('Translate x:' + position.x + ' y:' + position.y);
-    })
-
-    editor.on('addReroute', function (id) {
-        console.log("Reroute added " + id);
-    })
-
-    editor.on('removeReroute', function (id) {
-        console.log("Reroute removed " + id);
-    })
-
-    /* DRAG EVENT */
-
-    /* Mouse and Touch Actions */
-
-    var elements = document.getElementsByClassName('drag-drawflow');
-    for (var i = 0; i < elements.length; i++) {
-        elements[i].addEventListener('touchend', drop, false);
-        elements[i].addEventListener('touchmove', positionMobile, false);
-        elements[i].addEventListener('touchstart', drag, false);
-    }
-
-    var mobile_item_selec = '';
-    var mobile_last_move = null;
-    function positionMobile(ev) {
-        mobile_last_move = ev;
-    }
-
-    function allowDrop(ev) {
-        ev.preventDefault();
-    }
-
-    function drag(ev) {
-        if (ev.type === "touchstart") {
-            mobile_item_selec = ev
-                .target
-                .closest(".drag-drawflow")
-                .getAttribute('data-node');
-        } else {
-            ev
-                .dataTransfer
-                .setData("node", ev.target.getAttribute('data-node'));
-        }
-    }
-
-    function drop(ev) {
-        if (ev.type === "touchend") {
-            var parentdrawflow = document
-                .elementFromPoint(
-                    mobile_last_move.touches[0].clientX,
-                    mobile_last_move.touches[0].clientY
-                )
-                .closest("#drawflow");
-            if (parentdrawflow != null) {
-                addNodeToDrawFlow(
-                    mobile_item_selec,
-                    mobile_last_move.touches[0].clientX,
-                    mobile_last_move.touches[0].clientY
-                );
-            }
-            mobile_item_selec = '';
-        } else {
-            ev.preventDefault();
-            var data = ev
-                .dataTransfer
-                .getData("node");
-            addNodeToDrawFlow(data, ev.clientX, ev.clientY);
-        }
-
-    }
-
-    function addNodeToDrawFlow(name, pos_x, pos_y) {
-        if (editor.editor_mode === 'fixed') {
-            return false;
-        }
-        pos_x = pos_x * (
-            editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)
-        ) - (
-            editor.precanvas.getBoundingClientRect().x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom))
-        );
-        pos_y = pos_y * (
-            editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)
-        ) - (
-            editor.precanvas.getBoundingClientRect().y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom))
-        );
-
-        var nodeContents = "";
-        switch (name) {
-            
-            /************* node-define *************/
-
-            // database
-
-            case 'oracle':
-                var nodeContents = `
-            <div>
-                <div class="title-box">Oracle Database</div>
-            </div>
-            `;
-                editor.addNode('oracle', 1, 1, pos_x, pos_y, 'oracle', {}, nodeContents);
-                break;
-            case 'postgresql':
-                var nodeContents = `
-            <div>
-                <div class="title-box">PostgreSQL</div>
-            </div>
-            `;
-                editor.addNode('postgresql', 1, 1, pos_x, pos_y, 'postgresql', {}, nodeContents);
-                break;
-            case 'mariadb':
-                var nodeContents = `
-            <div>
-                <div class="title-box">MariaDB</div>
-            </div>
-            `;
-                editor.addNode('mariadb', 1, 1, pos_x, pos_y, 'mariadb', {}, nodeContents);
-                break;
-            
-                
-            // middleware
-            case 'kafka':
-                var nodeContents = `
-            <div>
-                <div class="title-box">Kafka</div>
-            </div>
-            `;
-                editor.addNode('kafka', 1, 1, pos_x, pos_y, 'kafka', {}, nodeContents);
-                break;
-            case 'rabbitmq':
-                var nodeContents = `
-            <div>
-                <div class="title-box">RabbitMQ</div>
-            </div>
-            `;
-                editor.addNode('rabbitmq', 1, 1, pos_x, pos_y, 'rabbitmq', {}, nodeContents);
-                break;
-            case 'sap':
-                var nodeContents = `
-            <div>
-                <div class="title-box">SAP ERP</div>
-            </div>
-            `;
-                editor.addNode('sap', 1, 1, pos_x, pos_y, 'sap', {}, nodeContents);
-                break;
-
-            // protocol
-            case 'restful':
-                var nodeContents = `
-            <div>
-                <div class="title-box">RestFul</div>
-            </div>
-            `;
-                editor.addNode('restful', 1, 1, pos_x, pos_y, 'restful', {}, nodeContents);
-                break;
-            case 'soap':
-                var nodeContents = `
-            <div>
-                <div class="title-box">SOAP</div>
-            </div>
-            `;
-                editor.addNode('soap', 1, 1, pos_x, pos_y, 'soap', {}, nodeContents);
-                break;
-
-            // data transform
-            case 'custom':
-                var nodeContents = `
-            <div>
-                <div class="title-box">Custom Node</div>
-                <div class="box">
-                    <input type="button" class="btn btn-xs btn-flat" value="설정 "></input>
-                </div>
-            </div>
-            `;
-                editor.addNode('restful', 1, 1, pos_x, pos_y, 'restful', {}, nodeContents);
-                break;
-            case 'transform':
-                var nodeContents = `
-            <div>
-                <div class="title-box">Transform</div>
-                <div class="box">
-                    <input type="button" class="btn btn-xs btn-flat" value="설정 "></input>
-                </div>
-            </div>
-            `;
-                editor.addNode('transform', 1, 1, pos_x, pos_y, 'transform', {}, nodeContents);
-                break;
-            case 'router':
-                var nodeContents = `
-            <div>
-                <div class="title-box">Router</div>
-                <div class="box">
-                    <input type="button" class="btn btn-xs btn-flat" value="룰 지정"></input>
-                </div>
-            </div>
-            `;
-                editor.addNode('router', 1, 3, pos_x, pos_y, 'router', {}, nodeContents);
-                break;
-            
-             /************* end of node-define *************/
-
-            default:
-        }
-    }
-
-    var transform = '';
-    function showpopup(e) {
-        e
-            .target
-            .closest(".drawflow-node")
-            .style
-            .zIndex = "9999";
-        e
-            .target
-            .children[0]
-            .style
-            .display = "block";
-        // document.getElementById("modalfix").style.display = "block";
-        // e.target.children[0].style.transform = 'translate('+translate.x+'px,
-        // '+translate.y+'px)';
-        transform = editor.precanvas.style.transform;
-        editor.precanvas.style.transform = '';
-        editor.precanvas.style.left = editor.canvas_x + 'px';
-        editor.precanvas.style.top = editor.canvas_y + 'px';
-        console.log(transform);
-
-        // e.target.children[0].style.top  =  -editor.canvas_y -
-        // editor.container.offsetTop +'px'; e.target.children[0].style.left  =
-        // -editor.canvas_x  - editor.container.offsetLeft +'px';
-        editor.editor_mode = "fixed";
-
-    }
-
-    function closemodal(e) {
-        e
-            .target
-            .closest(".drawflow-node")
-            .style
-            .zIndex = "2";
-        e.target.parentElement.parentElement.style.display = "none";
-        //document.getElementById("modalfix").style.display = "none";
-        editor.precanvas.style.transform = transform;
-        editor.precanvas.style.left = '0px';
-        editor.precanvas.style.top = '0px';
-        editor.editor_mode = "edit";
-    }
-
-    function changeModule(event) {
-        var all = document.querySelectorAll(".menu ul li");
-        for (var i = 0; i < all.length; i++) {
-            all[i]
-                .classList
-                .remove('selected');
-        }
-        event
-            .target
-            .classList
-            .add('selected');
-    }
-
-    function changeMode(option) {
-
-        //console.log(lock.id);
-        if (option == 'lock') {
-            lock.style.display = 'none';
-            unlock.style.display = 'block';
-        } else {
-            lock.style.display = 'block';
-            unlock.style.display = 'none';
-        }
-
-    }
-</script>

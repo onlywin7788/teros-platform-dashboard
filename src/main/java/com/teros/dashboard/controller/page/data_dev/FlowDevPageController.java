@@ -3,6 +3,7 @@ package com.teros.dashboard.controller.page.data_dev;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 public class FlowDevPageController {
@@ -19,9 +20,17 @@ public class FlowDevPageController {
         return "contents/data_dev/flow_dev/index";
     }
 
-    @GetMapping("/data-development/flow-dev/create")
-    public String flowDevCreate(Model model) {
-        return "contents/data_dev/flow_dev/contents/index";
+    @GetMapping("/data-development/flow-design/create")
+    public String flowDDesignCreate(Model model) {
+        model.addAttribute("update", 0);
+        return "contents/data_dev/flow_dev/design/index";
+    }
+
+    @GetMapping("/data-development/flow-design/{id}")
+    public String flowDesignUpdate(Model model, @PathVariable long id) {
+        model.addAttribute("id", id);
+        model.addAttribute("update", 1);
+        return "contents/data_dev/flow_dev/design/index";
     }
 
     // flow-deploy

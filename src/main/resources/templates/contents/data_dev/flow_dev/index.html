@@ -7,26 +7,25 @@
         <script type="text/javascript">
 
             function refreshPage(){
-                location.href = "/identity/groups";
+                location.href = "/data-development/flow-dev";
             }
 
             function onCreateList() {
-                res = requestAPI("/central-server/v1/user-group", null, "GET");
+                res = requestAPI("/central-server/v1/flow", null, "GET");
                 //resData = jsonObjectParser(res);
 
                 var resList = res.list;
 
                 for (var i in resList) {
-                    var id = resList[i].userGroupId;
-                    var name = resList[i].userGroupName;
+                    var id = resList[i].flowId;
+                    var name = resList[i].flowName;
                     var description = resList[i].description;
                     var create_time = resList[i].createDtime;
                     var modify_time = resList[i].modifyDtime;
 
                     var append = "";
                     append += "<tr>";
-                    append += "<td><a href='#' data-toggle='modal' data-target='#modal-option-detail' data-backdrop='static' data-keyboard='false'>" +
-                            name + "</a></td>";
+                    append += "<td>" + name + "</td>";
                     append += "<td>" + create_time + "</td>";
                     append += "<td>" + modify_time + "</td>";
                     append += "<td>" + description + "</td>";
@@ -114,7 +113,7 @@
 
             
             function moveFlowDesign(){
-                location.href = "/data-development/flow-dev/create";
+                location.href = "/data-development/flow-design/create";
             }
 
             $(document).ready(function () {

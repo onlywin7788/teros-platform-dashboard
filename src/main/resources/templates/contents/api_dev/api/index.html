@@ -6,7 +6,7 @@
     <head>
         <script type="text/javascript">
             function btn_edit_api(id) {
-                location.href = "/api-development/api/" + id;
+                location.href = "/api-development/api/contents/" + id;
             }
 
             function onCreateList() {
@@ -48,7 +48,7 @@
 
             $(document).ready(function () {
                 $("#btn-api-create").click(function () {
-                    location.href = "/api-development/api/create";
+                    location.href = "/api-development/api/contents/create";
                 });
 
                 onCreateList();

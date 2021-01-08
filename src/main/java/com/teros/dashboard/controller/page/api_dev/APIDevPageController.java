@@ -14,23 +14,23 @@ public class APIDevPageController {
         return "contents/api_dev/api/index";
     }
 
-    @GetMapping("/api-development/api/create")
+    @GetMapping("/api-development/api/contents/create")
     public String developmentCreate(Model model) {
         model.addAttribute("update", 0);
-        return "contents/api_dev/api/contents";
+        return "contents/api_dev/api/contents/index";
     }
 
-    @GetMapping("/api-development/api/{id}")
+    @GetMapping("/api-development/api/contents/{id}")
     public String developmentUpdate(Model model, @PathVariable long id) {
         model.addAttribute("id", id);
         model.addAttribute("update", 1);
 
-        return "contents/api_dev/api/contents";
+        return "contents/api_dev/api/contents/index";
     }
 
-    @GetMapping("/api-development/api/module/input_method")
+    @GetMapping("/api-development/api/contents/module/method")
     public String developmentAPIModuleInputMethod(Model model) {
-        return "contents/api_dev/api/module/input_method";
+        return "contents/api_dev/api/contents/module/method";
     }
 
 

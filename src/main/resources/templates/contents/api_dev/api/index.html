@@ -5,7 +5,7 @@
     layout:decorate="~{layouts/layout}">
     <head>
         <script type="text/javascript">
-            function btn_edit_api(id) {
+            function btn_edit(id) {
                 location.href = "/api-development/api/contents/" + id;
             }
 
@@ -37,7 +37,7 @@
                     append += "<td>";
                     append += "<span style='cursor:pointer;' data-toggle='dropdown'><i class='fas fa-ellipsis" +
                             "-v'></i></span>";
-                    append += "<div class='dropdown-menu'><a class='dropdown-item' href='#' onclick='btn_edit_api(" + id + ")'>수정</a>"
+                    append += "<div class='dropdown-menu'><a class='dropdown-item' href='#' onclick='btn_edit(" + id + ")'>수정</a>"
                     append += "<a class='dropdown-item' href='#'>삭제</a></div>";
                     append += "</td>";
                     append += "</tr>";

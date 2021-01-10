@@ -162,39 +162,113 @@
                                             <!-- /.card -->
                                             <div class="card card-primary card-outline">
                                                 <div class="card-header">
-                                                    <h3 class="card-title">DATA 컨트롤 매니저</h3>
+                                                    <h3 class="card-title">호스트 탐색기</h3>
 
                                                     <div class="card-tools">
-                                                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                                            <i class="fas fa-minus"></i>
+                                                        <button type="button" class="btn btn-tool mr-2" onclick="refreshHostTreeview()">
+                                                            <i class="fas fa-sync-alt"></i>
                                                         </button>
                                                     </div>
                                                 </div>
                                                 <div class="card-body p-0">
-                                                    <ul class="nav nav-pills flex-column">
+                                                
+                                                    <table class="table">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <i class="nav-icon fas fa-server mr-2" style="font-size: 0.8rem;"></i>
+                                                                    HOST-001
+                                                                </td>
+                                                                <td>
+                                                                    <span style='cursor:pointer;' data-toggle='dropdown'>
+                                                                        <i class='fas fa-sort-down'></i>
+                                                                    </span>
+                                                                    <div class='dropdown-menu'>
+                                                                        <a class='dropdown-item' href='#'>매니저 추가</a>
+                                                                        <a class='dropdown-item' href='#'>호스트 수정</a>
+                                                                        <a class='dropdown-item' href='#'>호스트 삭제</a>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <i class="nav-icon fas fa-laptop ml-3 mr-2" style="font-size: 0.8rem; color: blue;"></i>
+                                                                    DATA-CM-001-A
+                                                                </td>
+                                                                <td>
+                                                                    <span style='cursor:pointer;' data-toggle='dropdown'>
+                                                                        <i class='fas fa-sort-down'></i>
+                                                                    </span>
+                                                                    <div class='dropdown-menu'>
+                                                                        <a class='dropdown-item' href='#'>매니저 수정</a>
+                                                                        <a class='dropdown-item' href='#'>매니저 삭제</a>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <i class="nav-icon fas fa-laptop ml-3 mr-2" style="font-size: 0.8rem; color: blue;"></i>
+                                                                    DATA-CM-001-B
+                                                                </td>
+                                                                <td>
+                                                                    <span style='cursor:pointer;' data-toggle='dropdown'>
+                                                                        <i class='fas fa-sort-down'></i>
+                                                                    </span>
+                                                                    <div class='dropdown-menu'>
+                                                                        <a class='dropdown-item' href='#'>매니저 수정</a>
+                                                                        <a class='dropdown-item' href='#'>매니저 삭제</a>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <i class="nav-icon fas fa-server mr-2" style="font-size: 0.8rem;"></i>
+                                                                    HOST-002
+                                                                </td>
+                                                                <td>
+                                                                    <span style='cursor:pointer;' data-toggle='dropdown'>
+                                                                        <i class='fas fa-sort-down'></i>
+                                                                    </span>
+                                                                    <div class='dropdown-menu'>
+                                                                        <a class='dropdown-item' href='#'>매니저 추가</a>
+                                                                        <a class='dropdown-item' href='#'>호스트 수정</a>
+                                                                        <a class='dropdown-item' href='#'>호스트 삭제</a>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <i class="nav-icon fas fa-laptop ml-3 mr-2" style="font-size: 0.8rem; color: blue;"></i>
+                                                                    DATA-CM-002-A
+                                                                </td>
+                                                                <td>
+                                                                    <span style='cursor:pointer;' data-toggle='dropdown'>
+                                                                        <i class='fas fa-sort-down'></i>
+                                                                    </span>
+                                                                    <div class='dropdown-menu'>
+                                                                        <a class='dropdown-item' href='#'>매니저 수정</a>
+                                                                        <a class='dropdown-item' href='#'>매니저 삭제</a>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <i class="nav-icon fas fa-laptop ml-3 mr-2" style="font-size: 0.8rem; color: blue;"></i>
+                                                                    DATA-CM-002-B
+                                                                </td>
+                                                                <td>
+                                                                    <span style='cursor:pointer;' data-toggle='dropdown'>
+                                                                        <i class='fas fa-sort-down'></i>
+                                                                    </span>
+                                                                    <div class='dropdown-menu'>
+                                                                        <a class='dropdown-item' href='#'>매니저 수정</a>
+                                                                        <a class='dropdown-item' href='#'>매니저 삭제</a>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
 
-                                                        <li class="nav-item">
-                                                            <a href="#" class="nav-link">
-                                                                <i class="far fa-circle text-primary"></i>
-                                                                DATA-CM-LINUX-102
-                                                            </a>
-                                                        </li>
-
-                                                        <li class="nav-item">
-                                                            <a href="#" class="nav-link">
-                                                                <i class="far fa-circle text-danger"></i>
-                                                                DATA-CM-LINUX-103
-                                                            </a>
-                                                        </li>
-
-                                                        <li class="nav-item">
-                                                            <a href="#" class="nav-link">
-                                                                <i class="far fa-circle text-danger"></i>
-                                                                DATA-CM-LINUX-104
-                                                            </a>
-                                                        </li>
-
-                                                    </ul>
                                                 </div>
                                                 <!-- /.card-body -->
                                             </div>
@@ -203,13 +277,6 @@
 
                                         <!-- /.col -->
                                         <div class="col-md-10">
-
-                                            <input
-                                                type="button"
-                                                class="btn btn-primary btn-flat mb-3 col-md-2 offset-md-10"
-                                                value="애플리케이션 연결 생성"
-                                                data-toggle="modal"
-                                                data-target="#modal-add-connection-info"/>
 
                                             <div class="card card-primary card-outline">
                                                 <div class="card-header">

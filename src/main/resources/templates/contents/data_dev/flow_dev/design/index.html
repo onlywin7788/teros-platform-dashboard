@@ -12,8 +12,9 @@
                 <nav aria-label="breadcrumb" class="mb-4">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item active" aria-current="page">Home</li>
-                        <li class="breadcrumb-item active" aria-current="page">DATA 개발</li>
-                        <li class="breadcrumb-item active" aria-current="page">Flow 개발</li>
+                        <li class="breadcrumb-item active" aria-current="page">데이터 개발</li>
+                        <li class="breadcrumb-item active" aria-current="page">플로우 개발</li>
+                        <li class="breadcrumb-item active" aria-current="page">플로우 디자인</li>
                     </ol>
                 </nav>
 
@@ -196,13 +197,13 @@
                                             <!-- /.col -->
                                             <div class="col-md-8">
 
-                                                <div class="card card-primary card-outline">
+                                                <div class="card card-primary card-outline h-100">
                                                     <div class="card-header">
                                                         <h3 class="card-title">디자인 팔레트</h3>
-                                                        <span style="float:right;">
+                                                        <span style="float:right; cursor:pointer;">
                                                             <span>임시저장</span>
                                                             &nbsp;&nbsp;
-                                                            <span onclick="saveFlow()">저장</span>
+                                                            <span style="cursor:pointer;" onclick="saveFlow()">저장</span>
                                                         </span>
                                                     </div>
                                                     <div class="card-body p-0">
@@ -220,13 +221,24 @@
                                             <div class="col-md-2">
 
                                                 <!-- /.card -->
-                                                <div class="card card-primary card-outline">
+                                                <div class="card card-primary card-outline h-100">
                                                     <div class="card-header">
                                                         <h3 class="card-title">플로우 설정</h3>
                                                     </div>
                                                     <div class="card-body p-0">
-
-                                                        
+                                                        <form role="form">
+                                                            <div class="card-body">
+                                                                <div class="form-group input-group-sm">
+                                                                    <label>플로우 이름</label>
+                                                                    <input type="text" class="form-control" id="text-flow-name">
+                                                                </div>
+                            
+                                                                <div class="form-group input-group-sm">
+                                                                    <label>설명</label>
+                                                                    <textarea class="form-control" id="text-flow-desc" rows="10"></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </form>
 
                                                     </div>
                                                     <!-- /.card-body -->
@@ -256,16 +268,80 @@
 </html>
 
 <script type="text/javascript">
+
+    // thymeleaf value
+    /*<![CDATA[*/
+    var update_flag = "[[${update}]]";
+    var update_id = "[[${id}]]";
+    /*]]>*/
+
     var id = document.getElementById("drawflow");
     const editor = new Drawflow(id);
     editor.reroute = true;
-    editor.start();
 
+
+    // -- add function    
     function saveFlow(){
+
         var exportdata = editor.export();
         exportdata = JSON.stringify(exportdata);
         console.log(exportdata);
+      
+        var requestData = {
+            "flowName": $("#text-flow-name").val(),
+            "description": $("#text-flow-desc").val(),
+            "layout": exportdata
+        };
+        
+        requestData = JSON.stringify(requestData);
+
+        var method = "POST";
+        var api_url = "/central-server/v1/flow";
+        res = requestAPI(api_url, requestData, method);
+
+        if (!alert("FLOW 가 저장되었습니다.")) {
+            location.href = "/data-development/flow-dev";
+        }
+
     }
+
+    function onCreateContents(id) {
+
+        if(id == 0){
+            editor.start();
+        }
+        else
+        {
+            // 기본 API 정의 목록
+            res = requestAPI("/central-server/v1/flow/" + update_id, null, "GET");
+            var flowName = res.data.flowName;
+            var layout = res.data.layout;
+            var description = res.data.description;
+
+            $("#text-flow-name").val(flowName);
+            $("#text-flow-desc").val(description);
+            var layout = jQuery.parseJSON(layout);
+            editor.drawflow = layout;
+            editor.start();
+        }
+    }
+
+    function onInitialize() {
+        if (update_flag == "1") {
+            onCreateContents(id);
+        }
+        else{
+            onCreateContents(0);
+        }
+
+
+    }
+
+    $(document).ready(function () {
+        onInitialize();
+    });
+
+    // end of -- add function
 
     // Events!
     editor.on('nodeCreated', function (id) {
@@ -299,7 +375,7 @@
     })
 
     editor.on('mouseMove', function (position) {
-        console.log('Position mouse x:' + position.x + ' y:' + position.y);
+        //console.log('Position mouse x:' + position.x + ' y:' + position.y);
     })
 
     editor.on('nodeMoved', function (id) {

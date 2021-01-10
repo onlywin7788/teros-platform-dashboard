@@ -10,6 +10,10 @@
                 location.href = "/data-development/flow-dev";
             }
 
+            function btn_edit(id) {
+                location.href = "/data-development/flow-design/" + id;
+            }
+
             function onCreateList() {
                 res = requestAPI("/central-server/v1/flow", null, "GET");
                 //resData = jsonObjectParser(res);
@@ -25,14 +29,14 @@
 
                     var append = "";
                     append += "<tr>";
-                    append += "<td>" + name + "</td>";
+                    append += "<td>" + "<a href='#' onclick='btn_edit(" + id + ")'>" + name + "</a></td>";
                     append += "<td>" + create_time + "</td>";
                     append += "<td>" + modify_time + "</td>";
                     append += "<td>" + description + "</td>";
                     append += "<td>";
                     append += "<span style='cursor:pointer;' data-toggle='dropdown'><i class='fas fa-ellipsis" +
                             "-v'></i></span>";
-                    append += "<div class='dropdown-menu'><a class='dropdown-item' onclick='openModalDataUserGroup(" + id + ")'>수정</a>"
+                    append += "<div class='dropdown-menu'><a class='dropdown-item' href='#' onclick='btn_edit(" + id + ")'>수정</a>"
                     append += "<a class='dropdown-item' href='#' onclick='openModalDeleteUserGroup(" + id + ")'>삭제</a></div>";
                     append += "</td>";
                     append += "</tr>";

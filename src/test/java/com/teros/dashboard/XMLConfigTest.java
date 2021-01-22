@@ -2,6 +2,7 @@ package com.teros.dashboard;
 
 import com.google.gson.*;
 import com.teros.ext.common.file.CommonFile;
+import com.teros.ext.common.parser.JsonParser;
 import com.teros.ext.common.parser.XmlParser;
 import jdk.nashorn.internal.objects.annotations.Getter;
 import jdk.nashorn.internal.objects.annotations.Setter;
@@ -24,6 +25,12 @@ class JsonParser2 {
     public void loadString(String contents) {
         JsonObject jsonObject = (JsonObject) this.gson.fromJson(contents, JsonObject.class);
         this.json = jsonObject;
+    }
+
+    public String getJsonString()
+    {
+        String result = this.json.toString();
+        return result;
     }
 
     public String getTextFromElement(String path) throws Exception {
@@ -169,13 +176,27 @@ public class XMLConfigTest {
 
     @Test
     public void test() throws Exception {
-        ArrayList<LayoutInfo> layoutList;
-        CommonFile commonFile = new CommonFile();
 
-        byte[] readBytes = commonFile.readFile("e:/teros_home/test/layout.json");
-        String contents = new String(readBytes);
+        try {
+            ArrayList<LayoutInfo> layoutList;
+            CommonFile commonFile = new CommonFile();
 
-        layoutList = getLayoutInfo(contents);
+            byte[] readBytes = commonFile.readFile("e:/teros_home/test/layout.json");
+            String contents = new String(readBytes);
+
+            JsonParser2 jsonParser = new JsonParser2();
+            jsonParser.loadString(contents);
+
+            String result = jsonParser.getJsonString();
+
+            System.out.println(result);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+//        layoutList = getLayoutInfo(contents);
 
     }
 

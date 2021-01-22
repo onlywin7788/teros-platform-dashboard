@@ -228,14 +228,17 @@
                                                     <div class="card-body p-0">
                                                         <form role="form">
                                                             <div class="card-body">
-                                                                <div class="form-group input-group-sm">
-                                                                    <label>플로우 이름</label>
-                                                                    <input type="text" class="form-control" id="text-flow-name">
-                                                                </div>
-                            
-                                                                <div class="form-group input-group-sm">
-                                                                    <label>설명</label>
-                                                                    <textarea class="form-control" id="text-flow-desc" rows="10"></textarea>
+
+                                                                <div id="div-node-prop">
+                                                                    <div class="form-group input-group-sm">
+                                                                        <label>플로우 이름</label>
+                                                                        <input type="text" class="form-control" id="text-flow-name">
+                                                                    </div>
+                                
+                                                                    <div class="form-group input-group-sm">
+                                                                        <label>설명</label>
+                                                                        <textarea class="form-control" id="text-flow-desc" rows="10"></textarea>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </form>
@@ -279,14 +282,50 @@
     const editor = new Drawflow(id);
     editor.reroute = true;
 
+    function getFlowLayout()
+    {
+        var exportdata = editor.export();
+        exportdata = JSON.stringify(exportdata);
+
+        return exportdata;
+    }
+
+    function getClassNameFromDrawFlow(id)
+    {
+        flowLayout = getFlowLayout();
+        var layoutObject = JSON.parse(flowLayout);
+        className = layoutObject.drawflow.Home.data[id].name;
+
+        return className;
+    }
+
+    function displayFlowProp(className)
+    {
+        res = requestAPI("/central-server/v1/flow/class/class-name?className=" + className, null, "GET");
+        var classId = res.data.classId;
+
+        res = requestAPI("/central-server/v1/flow/class/prop/class-id/" + classId, null, "GET");
+        var resList = res.list;
+
+        var displayProp = "";
+        for (var i in resList) {
+            var classPropId = resList[i].classPropId;
+            var propName = resList[i].propName;
+            var displayName = resList[i].displayName;
+
+            displayProp += "<div class='form-group input-group-sm'>";
+            displayProp += "<label>" + displayName + "</lable>";
+            displayProp += "<input type='text' class='form-control' id='text-node-prop-value'>";
+            displayProp += "</div>";
+        }
+        $("#div-node-prop").html(displayProp);
+    }
 
     // -- add function    
     function saveFlow(){
 
-        var exportdata = editor.export();
-        exportdata = JSON.stringify(exportdata);
-        console.log(exportdata);
-      
+        exportdata = getFlowLayout();
+        
         var requestData = {
             "flowName": $("#text-flow-name").val(),
             "description": $("#text-flow-desc").val(),
@@ -297,12 +336,40 @@
 
         var method = "POST";
         var api_url = "/central-server/v1/flow";
+
+        if (update_flag == "1") {
+            method = "PUT";
+            api_url = "/central-server/v1/flow/" + update_id;
+        }
+
         res = requestAPI(api_url, requestData, method);
+
+        var lastId = 0;
+        if (update_flag == "1") 
+            lastId = update_id;
+        else 
+            lastId = res.data.flowId;
+            
+        send_insert_append(lastId);
 
         if (!alert("FLOW 가 저장되었습니다.")) {
             location.href = "/data-development/flow-dev";
         }
 
+    }
+
+    function send_insert_append(lastId) {
+        
+        var exportdata = editor.export();
+        exportdata = JSON.stringify(exportdata);
+        
+        var requestData = {
+            "layout": exportdata
+        };
+        
+        requestData = JSON.stringify(requestData);
+        res = requestAPI("/central-server/v1/flow/config/" + lastId
+        ,requestData, "PUT");
     }
 
     function onCreateContents(id) {
@@ -353,7 +420,8 @@
     })
 
     editor.on('nodeSelected', function (id) {
-        console.log("Node selected " + id);
+        var className = getClassNameFromDrawFlow(id);
+        displayFlowProp(className);
     })
 
     editor.on('moduleCreated', function (name) {
@@ -486,7 +554,7 @@
                 <div class="title-box">Oracle Database</div>
             </div>
             `;
-                editor.addNode('oracle', 1, 1, pos_x, pos_y, 'oracle', {}, nodeContents);
+                editor.addNode('ORACLE', 1, 1, pos_x, pos_y, 'ORACLE', {}, nodeContents);
                 break;
             case 'postgresql':
                 var nodeContents = `
@@ -494,7 +562,7 @@
                 <div class="title-box">PostgreSQL</div>
             </div>
             `;
-                editor.addNode('postgresql', 1, 1, pos_x, pos_y, 'postgresql', {}, nodeContents);
+                editor.addNode('POSTGRESQL', 1, 1, pos_x, pos_y, 'POSTGRESQL', {}, nodeContents);
                 break;
             case 'mariadb':
                 var nodeContents = `
@@ -502,7 +570,7 @@
                 <div class="title-box">MariaDB</div>
             </div>
             `;
-                editor.addNode('mariadb', 1, 1, pos_x, pos_y, 'mariadb', {}, nodeContents);
+                editor.addNode('MARIADB', 1, 1, pos_x, pos_y, 'MARIADB', {}, nodeContents);
                 break;
             
                 
@@ -513,7 +581,7 @@
                 <div class="title-box">Kafka</div>
             </div>
             `;
-                editor.addNode('kafka', 1, 1, pos_x, pos_y, 'kafka', {}, nodeContents);
+                editor.addNode('KAFKA', 1, 1, pos_x, pos_y, 'KAFKA', {}, nodeContents);
                 break;
             case 'rabbitmq':
                 var nodeContents = `
@@ -521,7 +589,7 @@
                 <div class="title-box">RabbitMQ</div>
             </div>
             `;
-                editor.addNode('rabbitmq', 1, 1, pos_x, pos_y, 'rabbitmq', {}, nodeContents);
+                editor.addNode('RABBITMQ', 1, 1, pos_x, pos_y, 'RABBITMQ', {}, nodeContents);
                 break;
             case 'sap':
                 var nodeContents = `
@@ -529,7 +597,7 @@
                 <div class="title-box">SAP ERP</div>
             </div>
             `;
-                editor.addNode('sap', 1, 1, pos_x, pos_y, 'sap', {}, nodeContents);
+                editor.addNode('SAP', 1, 1, pos_x, pos_y, 'SAP', {}, nodeContents);
                 break;
 
             // protocol
@@ -539,7 +607,7 @@
                 <div class="title-box">RestFul</div>
             </div>
             `;
-                editor.addNode('restful', 1, 1, pos_x, pos_y, 'restful', {}, nodeContents);
+                editor.addNode('RESTFUL', 1, 1, pos_x, pos_y, 'RESTFUL', {}, nodeContents);
                 break;
             case 'soap':
                 var nodeContents = `
@@ -547,7 +615,7 @@
                 <div class="title-box">SOAP</div>
             </div>
             `;
-                editor.addNode('soap', 1, 1, pos_x, pos_y, 'soap', {}, nodeContents);
+                editor.addNode('SOAP', 1, 1, pos_x, pos_y, 'SOAP', {}, nodeContents);
                 break;
 
             // data transform
@@ -560,7 +628,7 @@
                 </div>
             </div>
             `;
-                editor.addNode('restful', 1, 1, pos_x, pos_y, 'restful', {}, nodeContents);
+                editor.addNode('CUSTOM', 1, 1, pos_x, pos_y, 'CUSTOM', {}, nodeContents);
                 break;
             case 'transform':
                 var nodeContents = `
@@ -571,7 +639,7 @@
                 </div>
             </div>
             `;
-                editor.addNode('transform', 1, 1, pos_x, pos_y, 'transform', {}, nodeContents);
+                editor.addNode('TRANSFORM', 1, 1, pos_x, pos_y, 'TRANSFORM', {}, nodeContents);
                 break;
             case 'router':
                 var nodeContents = `
@@ -582,7 +650,7 @@
                 </div>
             </div>
             `;
-                editor.addNode('router', 1, 3, pos_x, pos_y, 'router', {}, nodeContents);
+                editor.addNode('ROUTER', 1, 3, pos_x, pos_y, 'ROUTER', {}, nodeContents);
                 break;
             
              /************* end of node-define *************/

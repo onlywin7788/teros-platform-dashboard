@@ -49,6 +49,7 @@ public class RestRemoteController {
             // GET PARAMETER
             String getParam = "";
             Enumeration eParam = request.getParameterNames();
+<<<<<<< Updated upstream
             while (eParam.hasMoreElements()) {
                 String pName = (String)eParam.nextElement();
                 String pValue = request.getParameter(pName);
@@ -57,6 +58,23 @@ public class RestRemoteController {
             }
 
             log.info("REQUEST REMOTE PATH : [" + requestPath + "]");
+=======
+            int paramIndex = 0;
+            while (eParam.hasMoreElements()) {
+
+                String paramToken = "?";
+
+                String pName = (String)eParam.nextElement();
+                String pValue = request.getParameter(pName);
+                if(paramIndex != 0)
+                    paramToken = "&";
+
+                getParam += String.format(paramToken + "%s=%s", pName, pValue);
+                paramIndex++;
+            }
+
+            log.info("REQUEST REMOTE PATH : [" + requestPath + getParam + "]");
+>>>>>>> Stashed changes
 
             // method
             if (requestMethodString.equals("GET") == true)

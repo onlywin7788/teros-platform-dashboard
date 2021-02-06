@@ -25,5 +25,4 @@ public class Application {
 		factory.addConnectorCustomizers(gracefulShutdown);
 		return factory;
 	}
-
 }

@@ -11,7 +11,13 @@ public class FlowDevPageController {
     //exec-group
     @GetMapping("/data-development/exec-group")
     public String executionGroup(Model model) {
-        return "contents/data_dev/exec_group/index";
+        return "contents/data_dev/exec_group/exec_group";
+    }
+
+    //exec-group
+    @GetMapping("/data-development/exec-group-flow-map")
+    public String executionGroupFlowMap(Model model) {
+        return "contents/data_dev/exec_group/exec_group_flow_map";
     }
 
     // flow-dev
@@ -31,12 +37,6 @@ public class FlowDevPageController {
         model.addAttribute("id", id);
         model.addAttribute("update", 1);
         return "contents/data_dev/flow_dev/design/index";
-    }
-
-    // flow-deploy
-    @GetMapping("/data-development/flow-deploy")
-    public String flowDeploy(Model model) {
-        return "contents/data_dev/flow_deploy/index";
     }
 
     // connector

@@ -1,4 +1,4 @@
-package com.teros.dashboard.controller.page.api_dev;
+package com.teros.dashboard.controller.page.apiservice;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -6,12 +6,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
-public class APIDevPageController {
+public class APIServicePageController {
 
-    // PAGE : API
-    @GetMapping("/api-development/api")
-    public String apiIndex(Model model) {
-        return "contents/api_dev/api/index";
+    @GetMapping("/APIService/development/project")
+    public String APIServiceDevProjectIndex(Model model) {
+        return "contents/APIService/development/project/index";
     }
 
     @GetMapping("/api-development/api/contents/create")

@@ -49,22 +49,27 @@ public class RestRemoteController {
             // GET PARAMETER
             String getParam = "";
             Enumeration eParam = request.getParameterNames();
+
+            if(eParam.hasMoreElements() == true)
+                getParam += "?request_central_server=1";
+
             while (eParam.hasMoreElements()) {
-                String pName = (String)eParam.nextElement();
+                String pName = (String) eParam.nextElement();
                 String pValue = request.getParameter(pName);
 
-                getParam += String.format("?%s=%s", pName, pValue);
+                getParam += String.format("&%s=%s", pName, pValue);
             }
 
+            log.info("REQUEST REMOTE URI : [" + requestUrl + "]");
             log.info("REQUEST REMOTE PATH : [" + requestPath + "]");
             int paramIndex = 0;
             while (eParam.hasMoreElements()) {
 
                 String paramToken = "?";
 
-                String pName = (String)eParam.nextElement();
+                String pName = (String) eParam.nextElement();
                 String pValue = request.getParameter(pName);
-                if(paramIndex != 0)
+                if (paramIndex != 0)
                     paramToken = "&";
 
                 getParam += String.format(paramToken + "%s=%s", pName, pValue);

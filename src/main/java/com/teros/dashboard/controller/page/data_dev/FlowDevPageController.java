@@ -8,23 +8,30 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class FlowDevPageController {
 
-    //exec-group
-    @GetMapping("/data-development/exec-group")
-    public String executionGroup(Model model) {
-        return "contents/data_dev/exec_group/exec_group";
-    }
-
-    //exec-group
-    @GetMapping("/data-development/exec-group-flow-map")
-    public String executionGroupFlowMap(Model model) {
-        return "contents/data_dev/exec_group/exec_group_flow_map";
-    }
-
     // flow-dev
     @GetMapping("/data-development/flow-dev")
     public String flowDev(Model model) {
         return "contents/data_dev/flow_dev/index";
     }
+
+    // exec-group
+    @GetMapping("/data-development/flow-group")
+    public String executionGroup(Model model) {
+        return "contents/data_dev/flow_group/flow_group";
+    }
+
+    // exec-group
+    @GetMapping("/data-development/exec-group-flow-map")
+    public String executionGroupFlowMap(Model model) {
+        return "contents/data_dev/flow_group/exec_group_flow_map";
+    }
+
+    // flow-deploy
+    @GetMapping("/data-development/flow-deploy")
+    public String flowDeploy(Model model) {
+        return "contents/data_dev/flow_deploy/index";
+    }
+
 
     @GetMapping("/data-development/flow-design/create")
     public String flowDDesignCreate(Model model) {

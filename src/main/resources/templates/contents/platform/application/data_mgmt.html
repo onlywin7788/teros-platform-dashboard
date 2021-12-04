@@ -6,7 +6,7 @@
     <head>
         <script type="text/javascript">
         
-            var applicationTypeCode = "DATA";
+            var applicationTypeId = "2";
 
             function onCreateExecGroupList() {
                 res = requestAPI("/central-server/v1/exec-group", null, "GET");
@@ -75,7 +75,7 @@
                 var requestData = {
                     "hostName": $("#text-modal-host-name").val(),
                     "description": $("#text-modal-host-desc").val(),
-                    "typeCode": applicationTypeCode
+                    "appTypeId": applicationTypeId
                 };
                 requestData = JSON.stringify(requestData);
                 res = requestAPI("/central-server/v1/appm/app/host", requestData, "POST");
@@ -129,7 +129,7 @@
                 var footerContents = `</tbody></table>`;
                 var contents = "";
 
-                hostResult = requestAPI("/central-server/v1/appm/app/host", null, "GET");
+                hostResult = requestAPI("/central-server/v1/appm/app/host/type/2", null, "GET");
                 var hostList = hostResult.list;
                 for (var hostIndex in hostList) {
 

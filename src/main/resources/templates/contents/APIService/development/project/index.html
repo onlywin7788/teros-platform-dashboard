@@ -4,8 +4,8 @@
 
 <head>
     <script type="text/javascript">
-        function btn_edit(id) {
-            location.href = "/api-development/api/contents/" + id;
+        function moveAPIPage(projectId, projectName) {
+            location.href = `/APIService/development/api?projectId=${projectId}&projectName=${projectName}`;
         }
 
         function refreshPage(){
@@ -19,6 +19,8 @@
             var resList = res.list;
 
             for (var i in resList) {
+                var index = Number(i+1);
+                var id = resList[i].apiProjectId;
                 var name = resList[i].projectName;
                 var description = resList[i].description;
                 var create_time = resList[i].createDtime;
@@ -27,8 +29,8 @@
                 var contents =
                 `
                 <tr>
-                    <td></td>
-                    <td>${name}</td>
+                    <td>${index}</td>
+                    <td><a href='#' onclick='moveAPIPage(${id}, "${name}")'>${name}</a></td>
                     <td>${create_time}</td>
                     <td>${modify_time}</td>
                     <td>${description}</td>
@@ -139,7 +141,7 @@
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h6 class="modal-title">사용자 정보</h6>
+                            <h6 class="modal-title">프로젝트 생성</h6>
                             <button type="button" class="close" data-dismiss="modal">×</button>
                             </button>
                         </div>

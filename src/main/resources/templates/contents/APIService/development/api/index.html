@@ -5,6 +5,10 @@
     layout:decorate="~{layouts/layout}">
     <head>
         <script type="text/javascript">
+
+            var projectId = getParam('projectId');
+            var projectName = getParam('projectName');
+
             function btn_edit(id) {
                 location.href = "/api-development/api/contents/" + id;
             }
@@ -48,7 +52,7 @@
 
             $(document).ready(function () {
                 $("#btn-api-create").click(function () {
-                    location.href = "/api-development/api/contents/create";
+                    location.href = "/APIService/development/api/create";
                 });
 
                 onCreateList();
@@ -66,6 +70,10 @@
                         <li class="breadcrumb-item active" aria-current="page">Home</li>
                         <li class="breadcrumb-item active" aria-current="page">API 개발</li>
                         <li class="breadcrumb-item active" aria-current="page">API</li>
+                    </ol>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item active" aria-current="page">PROJECT</li>
+                        <li class="breadcrumb-item active" aria-current="page"><script>document.write(projectName)</script></li>
                     </ol>
                 </nav>
 

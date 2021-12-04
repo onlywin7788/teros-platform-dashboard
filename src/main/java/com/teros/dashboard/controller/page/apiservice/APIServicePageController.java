@@ -9,15 +9,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class APIServicePageController {
 
     @GetMapping("/APIService/development/project")
-    public String APIServiceDevProjectIndex(Model model) {
+    public String APIServiceProjectIndex(Model model) {
         return "contents/APIService/development/project/index";
     }
 
-    @GetMapping("/api-development/api/contents/create")
-    public String developmentCreate(Model model) {
-        model.addAttribute("update", 0);
-        return "contents/api_dev/api/contents/index";
+    @GetMapping("/APIService/development/api")
+    public String APIServiceAPIIndex(Model model) {
+        return "contents/APIService/development/api/index";
     }
+
+    @GetMapping("/APIService/development/api/create")
+    public String APIServiceAPICreateIndex(Model model) {
+        return "contents/APIService/development/api/create/index";
+    }
+
+    @GetMapping("/APIService/development/api/create/module/method")
+    public String APIServiceAPICreateModuleMethod(Model model) {
+        return "contents/APIService/development/api/create/module/method";
+    }
+
 
     @GetMapping("/api-development/api/contents/{id}")
     public String developmentUpdate(Model model, @PathVariable long id) {
@@ -27,10 +37,6 @@ public class APIServicePageController {
         return "contents/api_dev/api/contents/index";
     }
 
-    @GetMapping("/api-development/api/contents/module/method")
-    public String developmentAPIModuleInputMethod(Model model) {
-        return "contents/api_dev/api/contents/module/method";
-    }
 
 
     // PAGE : API_PLAN

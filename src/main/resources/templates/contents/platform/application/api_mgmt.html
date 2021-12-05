@@ -1,32 +1,31 @@
 <!DOCTYPE html>
-<html
-    xmlns:th="http://www.thymeleaf.org"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     layout:decorate="~{layouts/layout}">
-    <head>
-        <script type="text/javascript">
-        
-            var applicationTypeId = "1";
-            var centralServerBaseURI = "/central-server/v1"
 
-            function onCreateExecGroupList() {
-                res = requestAPI("/central-server/v1/exec-group", null, "GET");
-                //resData = jsonObjectParser(res);
+<head>
+    <script type="text/javascript">
 
-                var resList = res.list;
+        var applicationTypeId = "1";
+        var centralServerBaseURI = "/central-server/v1"
 
-                for (var i in resList) {
-                    var id = resList[i].execGroupId;
-                    var name = resList[i].execGroupName;
-                    var description = resList[i].description;
-                    var create_time = resList[i].createDtime;
-                    var modify_time = resList[i].modifyDtime;
+        function onCreateExecGroupList() {
+            res = requestAPI("/central-server/v1/exec-group", null, "GET");
+            //resData = jsonObjectParser(res);
 
-                    if(id == 0)
-                        continue;
+            var resList = res.list;
 
-                        var html = 
-                        `
+            for (var i in resList) {
+                var id = resList[i].execGroupId;
+                var name = resList[i].execGroupName;
+                var description = resList[i].description;
+                var create_time = resList[i].createDtime;
+                var modify_time = resList[i].modifyDtime;
+
+                if (id == 0)
+                    continue;
+
+                var html =
+                    `
                         <tr>
                             <td>${name}</td>
                             <td>미배포</td>
@@ -46,119 +45,154 @@
                         </tr>
                         `;
 
-                    $("#tbody-group-list").append(html);
-                }
+                $("#tbody-group-list").append(html);
+            }
+        }
+
+        function openModalHost() {
+
+            $("#form-modal-host-info")[0].reset();
+            $("#modal-host-info").modal('show');
+        }
+
+        function hideModalHost() {
+            $("#modal-host-info").modal('hide');
+        }
+
+        function openModalManager(hostid) {
+
+            $("#form-modal-manager-info")[0].reset();
+            $("#hidden-modal-host-id").val(`${hostid}`)
+            $("#modal-manager-info").modal('show');
+        }
+
+        function hideModalManager() {
+            $("#modal-manager-info").modal('hide');
+        }
+
+        function sendDataHost() {
+
+            var requestData = {
+                "hostName": $("#text-modal-host-name").val(),
+                "description": $("#text-modal-host-desc").val(),
+                "appTypeId": applicationTypeId
+            };
+            requestData = JSON.stringify(requestData);
+            res = requestAPI("/central-server/v1/appm/app/host", requestData, "POST");
+
+            refreshHostInfo();
+            hideModalHost();
+
+        }
+
+        function sendDataManager() {
+
+            var requestData = {
+                "managerName": $("#text-modal-manager-name").val(),
+                "host": $("#text-modal-manager-ip").val(),
+                "port": $("#text-modal-manager-port").val(),
+                "description": $("#text-modal-manager-desc").val(),
+                "hostId": $("#hidden-modal-host-id").val()
+            };
+            requestData = JSON.stringify(requestData);
+            res = requestAPI("/central-server/v1/appm/app/manager", requestData, "POST");
+
+            refreshHostInfo();
+            hideModalManager();
+
+        }
+
+        function isAliveManager(id, name, host, port) {
+            iconId = "manager-icon-" + id;
+
+            res = requestAPI(`${centralServerBaseURI}/internal/appm/app/host?host=${host}&port=${port}`, null, "GET");
+            isAlive = res.success;
+
+            if (isAlive == true)
+                $("#" + iconId).css("color", "blue");
+            else
+                $("#" + iconId).css("color", "gray");
+
+            return isAlive;
+        }
+
+        function showManagerDetail(id, name, host, port) {
+            retIsAlive = isAliveManager(id, name, host, port);
+
+            // manager info
+            $("#text-info-manager-name").html(name);
+            $("#text-info-manager-host").html(host);
+            $("#text-info-manager-port").html(port);
+            $("#text-info-manager-status").html(retIsAlive.toString());
+
+            // tbody-api-list
+            res = requestAPI(`${centralServerBaseURI}/api`);
+            var resList = res.list;
+            
+            for (var i in resList) {
+                var index = parseInt(i) +1;
+                var id = resList[i].apiId;
+                var name = resList[i].apiName;
+                var version = resList[i].version;
+                var targetUrl = resList[i].targetUrl;
+                var description = resList[i].description;
+                var create_time = resList[i].createDtime;
+                var modify_time = resList[i].modifyDtime;
+
+                
+                var append =
+                `
+                <tr>
+                    <td>${index}</td>
+                    <td>${name}</td>
+                    <td>${version}</td>
+                    <td>${targetUrl}</td>
+                    <td>${create_time}</td>
+                    <td>${modify_time}</td>
+                    <td>구현중</td>";
+                    <td>
+                        <span style='cursor:pointer;' data-toggle='dropdown'><i class='fas fa-ellipsis-v'></i></span>
+                        <div class='dropdown-menu'><a class='dropdown-item' href='#' onclick='btn_edit("${id}")'>배포</a>
+                        <a class='dropdown-item' href='#'>배포 취소</a></div>
+                    </td>
+                </tr>
+                `
+
+                $("#tbody-api-list").append(append);
             }
 
-            function openModalHost(){
+        }
 
-                 $("#form-modal-host-info")[0].reset();
-                 $("#modal-host-info").modal('show');
-            }
+        function deleteDataHost(id, name) {
 
-            function hideModalHost(){
-                $("#modal-host-info").modal('hide');
-            }
-
-            function openModalManager(hostid){
-
-                $("#form-modal-manager-info")[0].reset();
-                $("#hidden-modal-host-id").val(`${hostid}`)
-                $("#modal-manager-info").modal('show');
-            }
-
-            function hideModalManager(){
-                $("#modal-manager-info").modal('hide');
-            }
-
-            function sendDataHost() {
-
-                var requestData = {
-                    "hostName": $("#text-modal-host-name").val(),
-                    "description": $("#text-modal-host-desc").val(),
-                    "appTypeId": applicationTypeId
-                };
-                requestData = JSON.stringify(requestData);
-                res = requestAPI("/central-server/v1/appm/app/host", requestData, "POST");
-
+            if (confirm(`호스트 정보를 삭제하시겠습니까?`) == true) {
+                res = requestAPI("/central-server/v1/appm/app/host/" + id, null, "DELETE");
                 refreshHostInfo();
-                hideModalHost();
-                
             }
 
-            function sendDataManager() {
+        }
 
-                var requestData = {
-                    "managerName": $("#text-modal-manager-name").val(),
-                    "host": $("#text-modal-manager-ip").val(),
-                    "port": $("#text-modal-manager-port").val(),
-                    "description": $("#text-modal-manager-desc").val(),
-                    "hostId": $("#hidden-modal-host-id").val()
-                };
-                requestData = JSON.stringify(requestData);
-                res = requestAPI("/central-server/v1/appm/app/manager", requestData, "POST");
-
+        function deleteDataManager(id, name) {
+            if (confirm(`매니저 정보를 삭제하시겠습니까?`) == true) {
+                res = requestAPI("/central-server/v1/appm/app/manager/" + id, null, "DELETE");
                 refreshHostInfo();
-                hideModalManager();
-
             }
+        }
 
-            function isAliveManager(id, name, host, port)
-            {
-                iconId = "manager-icon-" + id;
-                
-                res = requestAPI(`${centralServerBaseURI}/internal/appm/app/host?host=${host}&port=${port}`, null, "GET");
-                isAlive = res.success;
-                
-                if(isAlive == true)
-                    $("#" + iconId).css("color","blue"); 
-                else
-                    $("#" + iconId).css("color","gray"); 
+        function refreshHostInfo() {
 
-                return isAlive;
-            }
+            var headerContents = `<table class="table"><tbody>`;
+            var footerContents = `</tbody></table>`;
+            var contents = "";
 
-            function showManagerDetail(id, name, host, port){
-                retIsAlive = isAliveManager(id, name, host, port);
-                
-                $("#text-info-manager-name").html(name);
-                $("#text-info-manager-host").html(host);
-                $("#text-info-manager-port").html(port);
-                $("#text-info-manager-status").html(retIsAlive.toString());
+            hostResult = requestAPI("/central-server/v1/appm/app/host/type/1", null, "GET");
+            var hostList = hostResult.list;
+            for (var hostIndex in hostList) {
 
-            }
+                var hostId = hostList[hostIndex].hostId;
+                var hostName = hostList[hostIndex].hostName;
 
-            function deleteDataHost(id, name) {
-
-                if (confirm(`호스트 정보를 삭제하시겠습니까?`) == true) {
-                    res = requestAPI("/central-server/v1/appm/app/host/" + id, null, "DELETE");
-                    refreshHostInfo();
-                }
-
-            }
-
-            function deleteDataManager(id, name)
-            {
-                if (confirm(`매니저 정보를 삭제하시겠습니까?`) == true) {
-                    res = requestAPI("/central-server/v1/appm/app/manager/" + id, null, "DELETE");
-                    refreshHostInfo();
-                }
-            }
-
-            function refreshHostInfo(){
-
-                var headerContents = `<table class="table"><tbody>`;
-                var footerContents = `</tbody></table>`;
-                var contents = "";
-
-                hostResult = requestAPI("/central-server/v1/appm/app/host/type/1", null, "GET");
-                var hostList = hostResult.list;
-                for (var hostIndex in hostList) {
-
-                    var hostId = hostList[hostIndex].hostId;
-                    var hostName = hostList[hostIndex].hostName;
-
-                    contents += 
+                contents +=
                     `
                         <tr>
                             <td>
@@ -178,16 +212,16 @@
                         </tr>
                     `;
 
-                    managerResult = requestAPI("/central-server/v1/appm/app/manager/host-id?hostId=" + hostId, null, "GET");
-                    var managerList = managerResult.list;
-                    for (var managerIndex in managerList) {
+                managerResult = requestAPI("/central-server/v1/appm/app/manager/host-id?hostId=" + hostId, null, "GET");
+                var managerList = managerResult.list;
+                for (var managerIndex in managerList) {
 
-                        var managerId = managerList[managerIndex].managerId;
-                        var managerName = managerList[managerIndex].managerName;
-                        var managerHost = managerList[managerIndex].host;
-                        var managerPort = managerList[managerIndex].port;
+                    var managerId = managerList[managerIndex].managerId;
+                    var managerName = managerList[managerIndex].managerName;
+                    var managerHost = managerList[managerIndex].host;
+                    var managerPort = managerList[managerIndex].port;
 
-                        contents +=
+                    contents +=
                         `
                         <tr>
                             <td>
@@ -205,52 +239,49 @@
                             </td>
                         </tr>
                         `;
-                    }
                 }
-                
-                $("#div-host-info").html(headerContents + contents + footerContents);
             }
 
-            function onCreateList() {
-                refreshHostInfo();
-                onCreateExecGroupList();
-            }
+            $("#div-host-info").html(headerContents + contents + footerContents);
+        }
 
-            $(document).ready(function () {
-                $("#btn-api-create").click(function () {
-                    location.href = "/api-development/api/create";
-                });
-                
-                onCreateList();
+        function onCreateList() {
+            refreshHostInfo();
+            onCreateExecGroupList();
+        }
+
+        $(document).ready(function () {
+            $("#btn-api-create").click(function () {
+                location.href = "/api-development/api/create";
             });
-        </script>
-    </head>
+
+            onCreateList();
+        });
+    </script>
+</head>
 
 
-    <div layout:fragment="content">
-        <div class="wrapper">
-            <!-- Content Wrapper. Contains page content -->
-            <div class="content-wrapper">
-                <nav aria-label="breadcrumb" class="mb-4">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item active" aria-current="page">Home</li>
-                        <li class="breadcrumb-item active" aria-current="page">플랫폼 관리</li>
-                        <li class="breadcrumb-item active" aria-current="page">애플리케이션</li>
-                    </ol>
-                </nav>
+<div layout:fragment="content">
+    <div class="wrapper">
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item active" aria-current="page">Home</li>
+                    <li class="breadcrumb-item active" aria-current="page">플랫폼 관리</li>
+                    <li class="breadcrumb-item active" aria-current="page">애플리케이션</li>
+                </ol>
+            </nav>
 
 
             <!-------------------------- HOST MODAL ---------------------->
-            <div
-                class="modal fade"
-                id="modal-host-info"
-                tabindex="-1" data-backdrop="static" data-keyboard="false"
+            <div class="modal fade" id="modal-host-info" tabindex="-1" data-backdrop="static" data-keyboard="false"
                 role="dialog">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h6 class="modal-title">호스트 정보 등록</h6>
-                                <button type="button" class="close" data-dismiss="modal">×</button>
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h6 class="modal-title">호스트 정보 등록</h6>
+                            <button type="button" class="close" data-dismiss="modal">×</button>
                             </button>
                         </div>
                         <div class="modal-body">
@@ -265,7 +296,8 @@
                                     </div>
                                     <div class="form-group input-group-sm">
                                         <label>설명</label>
-                                        <textarea class="form-control" id="text-modal-host-desc" rows="5" style="resize: none;"></textarea>
+                                        <textarea class="form-control" id="text-modal-host-desc" rows="5"
+                                            style="resize: none;"></textarea>
                                     </div>
 
                                 </div>
@@ -273,11 +305,10 @@
 
                         </div>
                         <div class="modal-footer">
-                            <button
-                                type="button"
-                                class="btn btn-secondary btn-sm btn-flat"
+                            <button type="button" class="btn btn-secondary btn-sm btn-flat"
                                 data-dismiss="modal">닫기</button>
-                            <button type="button" class="btn btn-primary btn-sm btn-flat" onclick="sendDataHost()">확인</button>
+                            <button type="button" class="btn btn-primary btn-sm btn-flat"
+                                onclick="sendDataHost()">확인</button>
                         </div>
                     </div>
                 </div>
@@ -285,16 +316,13 @@
             <!------------------------------------------------------->
 
             <!-------------------------- MANAGER MODAL ---------------------->
-            <div
-                class="modal fade"
-                id="modal-manager-info"
-                tabindex="-1" data-backdrop="static" data-keyboard="false"
+            <div class="modal fade" id="modal-manager-info" tabindex="-1" data-backdrop="static" data-keyboard="false"
                 role="dialog">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h6 class="modal-title">매니저 정보 등록</h6>
-                                <button type="button" class="close" data-dismiss="modal">×</button>
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h6 class="modal-title">매니저 정보 등록</h6>
+                            <button type="button" class="close" data-dismiss="modal">×</button>
                             </button>
                         </div>
                         <div class="modal-body">
@@ -319,7 +347,8 @@
 
                                     <div class="form-group input-group-sm">
                                         <label>설명</label>
-                                        <textarea class="form-control" id="text-modal-manager-desc" rows="5" style="resize: none;"></textarea>
+                                        <textarea class="form-control" id="text-modal-manager-desc" rows="5"
+                                            style="resize: none;"></textarea>
                                     </div>
 
                                 </div>
@@ -327,11 +356,10 @@
 
                         </div>
                         <div class="modal-footer">
-                            <button
-                                type="button"
-                                class="btn btn-secondary btn-sm btn-flat"
+                            <button type="button" class="btn btn-secondary btn-sm btn-flat"
                                 data-dismiss="modal">닫기</button>
-                            <button type="button" class="btn btn-primary btn-sm btn-flat" onclick="sendDataManager()">확인</button>
+                            <button type="button" class="btn btn-primary btn-sm btn-flat"
+                                onclick="sendDataManager()">확인</button>
                         </div>
                     </div>
                 </div>
@@ -351,7 +379,8 @@
 
                                 <ul class="nav nav-tabs">
                                     <li class="nav-item">
-                                        <a class="nav-link active" href="/platform/management/application/api">API 애플리케이션</a>
+                                        <a class="nav-link active" href="/platform/management/application/api">API
+                                            애플리케이션</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" href="/platform/management/application/data">DATA 애플리케이션</a>
@@ -364,14 +393,15 @@
                                     <div class="row">
                                         <div class="col-md-2">
 
-                                            
+
                                             <!-- /.card -->
                                             <div class="card card-primary card-outline">
                                                 <div class="card-header">
                                                     <h3 class="card-title">호스트 탐색기</h3>
 
                                                     <div class="card-tools">
-                                                        <button type="button" class="btn btn-tool mr-2" onclick="refreshHostInfo()">
+                                                        <button type="button" class="btn btn-tool mr-2"
+                                                            onclick="refreshHostInfo()">
                                                             <i class="fas fa-sync-alt"></i>
                                                         </button>
                                                     </div>
@@ -381,16 +411,12 @@
                                             </div>
                                             <!-- /.card -->
 
-                                            <input
-                                                type="button"
-                                                class="btn btn-primary btn-flat mb-3 col-md-12"
-                                                value="신규호스트 등록"
-                                                onclick="openModalHost()"
-                                                />
+                                            <input type="button" class="btn btn-primary btn-flat mb-3 col-md-12"
+                                                value="신규호스트 등록" onclick="openModalHost()" />
 
                                         </div>
 
-                                        
+
                                         <!-- /.col -->
                                         <div class="col-md-10">
 
@@ -410,55 +436,67 @@
 
                                                 <div class="card-body mr-3 ml-3">
 
-                                                    <h7><i class="fas fa-user-cog mr-2 ml-1"></i><span style="font-weight: bold">매니저 정보</span></h7>
-                                                        <table class="table table-head-fixed table-bordered text-nowrap table-hover mt-3">
-                                                            <thead>
-                                                                <tr style="background-color:#f3f3f3; text-align: center; font-weight: bold;">
-                                                                    <td>API-Manager</td>
-                                                                    <td>Host</td>
-                                                                    <td>Port</td>
-                                                                    <td>IsAlive</td>
-                                                                    <td>Description</td>
-                                                                </tr>
-                                                            </thead>
-        
-                                                            <tbody style="text-align: center;">
-                                                                <tr>
-                                                                    <td style="width:250px"><span id="text-info-manager-name"></span></td>
-                                                                    <td style="width:100px"><span id="text-info-manager-host"></span></td>
-                                                                    <td style="width:100px"><span id="text-info-manager-port"></span></td>
-                                                                    <td style="width:100px"><span id="text-info-manager-status"></td>
-                                                                    <td style="text-align: left;"></td>
-                                                                </tr>
-                                                                
-        
-                                                            </tbody>
+                                                    <h7><i class="fas fa-user-cog mr-2 ml-1"></i><span
+                                                            style="font-weight: bold">매니저 정보</span></h7>
+                                                    <table
+                                                        class="table table-head-fixed table-bordered text-nowrap table-hover mt-3">
+                                                        <thead>
+                                                            <tr
+                                                                style="background-color:#f3f3f3; text-align: center; font-weight: bold;">
+                                                                <td>API-Manager</td>
+                                                                <td>Host</td>
+                                                                <td>Port</td>
+                                                                <td>IsAlive</td>
+                                                                <td>Description</td>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <tbody style="text-align: center;">
+                                                            <tr>
+                                                                <td style="width:250px"><span
+                                                                        id="text-info-manager-name"></span></td>
+                                                                <td style="width:100px"><span
+                                                                        id="text-info-manager-host"></span></td>
+                                                                <td style="width:100px"><span
+                                                                        id="text-info-manager-port"></span></td>
+                                                                <td style="width:100px"><span
+                                                                        id="text-info-manager-status"></td>
+                                                                <td style="text-align: left;"></td>
+                                                            </tr>
+
+
+                                                        </tbody>
                                                     </table>
                                                 </div>
 
                                                 <div class="card-body mr-3 ml-3">
 
-                                                    <h7><i class="fas fa-object-group mr-2 ml-1"></i><span style="font-weight: bold">API 실행 그룹 관리</span></h7>
+                                                    <h7><i class="fas fa-object-group mr-2 ml-1"></i><span
+                                                            style="font-weight: bold">API 서비스 배포 관리</span></h7>
 
-                                                        <table class="table table-head-fixed table-bordered text-nowrap table-hover mt-3">
-                                                            <thead>
-                                                                <tr style="background-color:#f3f3f3; text-align: center; font-weight: bold;">
-                                                                    <td style="width: 250px">API 그룹명</td>
-                                                                    <td style="width: 100px">상태</td>
-                                                                    <td style="width: 100px">API</td>
-                                                                    <td style="width: 50px">생성 일시</td>
-                                                                    <td style="width: 50px">수정 일시</td>
-                                                                    <td>설명</td>
-                                                                    <td style="width: 10px"></td>
-                                                                </tr>
-                                                            </thead>
-            
-                                                            <tbody style="text-align: center;" id="tbody-group-list"></tbody>
-                                                        </table>
+                                                    <table
+                                                        class="table table-head-fixed table-bordered text-nowrap table-hover mt-3">
+                                                        <thead>
+                                                            <tr
+                                                                style="background-color:#f3f3f3; text-align: center; font-weight: bold;">
+                                                                <td style="width: 10px">#</td>
+                                                                <td style="width: 250px">API 명</td>
+                                                                <td style="width: 250px">API 버전</td>
+                                                                <td class="mailbox-subject">TARGET 정보</td>
+                                                                <td style="width: 50px">생성 일시</td>
+                                                                <td style="width: 50px">수정 일시</td>
+                                                                <td>상태</td>
+                                                                <td style="width: 10px"></td>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <tbody style="text-align: center;" id="tbody-api-list">
+                                                        </tbody>
+                                                    </table>
 
                                                 </div>
 
-                                               
+
                                             </div>
                                             <!-- /.card-body -->
                                             <!-- /.card -->
@@ -482,4 +520,5 @@
         <!-- /.content-wrapper -->
     </div>
 </div>
+
 </html>

@@ -11,9 +11,9 @@
             <nav aria-label="breadcrumb" class="mb-4">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item active" aria-current="page">Home</li>
-                    <li class="breadcrumb-item active" aria-current="page">데이터 개발</li>
-                    <li class="breadcrumb-item active" aria-current="page">플로우 개발</li>
-                    <li class="breadcrumb-item active" aria-current="page">플로우 디자인</li>
+                    <li class="breadcrumb-item active" aria-current="page">데이터 서비스</li>
+                    <li class="breadcrumb-item active" aria-current="page">인터페이스 개발</li>
+                    <li class="breadcrumb-item active" aria-current="page">디자인</li>
                 </ol>
             </nav>
 
@@ -33,7 +33,7 @@
                                             <!-- /.card -->
                                             <div class="card card-primary card-outline">
                                                 <div class="card-header">
-                                                    <h3 class="card-title">데이터 소스</h3>
+                                                    <h3 class="card-title">컴포넌트</h3>
                                                 </div>
                                                 <div class="card-body p-0">
 
@@ -180,11 +180,11 @@
 
                                             <div class="card card-primary card-outline h-100">
                                                 <div class="card-header">
-                                                    <h3 class="card-title">디자인 팔레트</h3>
+                                                    <h3 class="card-title">디자인 영역</h3>
                                                     <span style="float:right; cursor:pointer;">
                                                         <span>임시저장</span>
                                                         &nbsp;&nbsp;
-                                                        <span style="cursor:pointer;" onclick="saveFlow()">저장</span>
+                                                        <span style="cursor:pointer;" onclick="saveInterface()">저장</span>
                                                     </span>
                                                 </div>
                                                 <div class="card-body p-0">
@@ -205,7 +205,7 @@
                                             <!-- /.card -->
                                             <div class="card card-primary card-outline h-100">
                                                 <div class="card-header">
-                                                    <h3 class="card-title">플로우 설정</h3>
+                                                    <h3 class="card-title">컴포넌트 옵션</h3>
                                                 </div>
                                                 <div class="card-body p-0">
                                                     <form role="form">
@@ -263,6 +263,9 @@
     var update_id = "[[${id}]]";
     /*]]>*/
 
+    var projectId = getParam('projectId');
+    var projectName = getParam('projectName');
+
     var id = document.getElementById("drawflow");
     const editor = new Drawflow(id);
     editor.reroute = true;
@@ -282,34 +285,37 @@
         return className;
     }
 
-    function displayFlowProp(className) {
-        res = requestAPI("/central-server/v1/flow/class/class-name?className=" + className, null, "GET");
-        var classId = res.data.classId;
+    function displayFlowProp(componentName) {
+        res = requestAPI("/central-server/v1/data-service/interface/component/find-by-name?name=" + componentName, null, "GET");
+        var componentId = res.data.componentId;
 
-        res = requestAPI("/central-server/v1/flow/class/prop/class-id/" + classId, null, "GET");
+        res = requestAPI("/central-server/v1/data-service/interface/component/prop/find-by-component-id?id=" + componentId, null, "GET");
         var resList = res.list;
 
         var displayProp = "";
         for (var i in resList) {
-            var classPropId = resList[i].classPropId;
+            var prodId = resList[i].prodId;
             var propName = resList[i].propName;
             var displayName = resList[i].displayName;
 
-            displayProp += "<div class='form-group input-group-sm'>";
-            displayProp += "<label>" + displayName + "</lable>";
-            displayProp += "<input type='text' class='form-control' id='text-node-prop-value'>";
-            displayProp += "</div>";
+            displayProp += 
+            `
+            <div class='form-group input-group-sm'>
+                <label>${displayName}</lable>
+                <input type='text' class='form-control' id='text-node-prop-value'>
+            </div>
+            `
         }
         $("#div-node-prop").html(displayProp);
     }
 
     // -- add function    
-    function saveFlow() {
+    function saveInterface() {
 
         exportdata = getFlowLayout();
 
         var requestData = {
-            "flowName": $("#text-flow-name").val(),
+            "intfName": $("#text-flow-name").val(),
             "description": $("#text-flow-desc").val(),
             "layout": exportdata
         };
@@ -334,8 +340,8 @@
 
         send_insert_append(lastId);
 
-        if (!alert("FLOW 가 저장되었습니다.")) {
-            location.href = "/data-development/flow-dev";
+        if (!alert("인터페이스가 저장되었습니다.")) {
+            location.href = `/data-service/development/interface?projectId=${projectId}&projectName=${projectName}`;
         }
 
     }

@@ -4,8 +4,9 @@
 
 <head>
     <script type="text/javascript">
-        function moveAPIPage(projectId, projectName) {
-            location.href = `/api-service/development/api?projectId=${projectId}&projectName=${projectName}`;
+
+        function moveInterfacePage(projectId, projectName) {
+            location.href = `/data-service/development/interface?projectId=${projectId}&projectName=${projectName}`;
         }
 
         function refreshPage(){
@@ -13,14 +14,14 @@
         }
 
         function onCreateList() {
-            res = requestAPI("/central-server/v1/api-service/project", null, "GET");
+            res = requestAPI("/central-server/v1/data-service/project", null, "GET");
             //resData = jsonObjectParser(res);
 
             var resList = res.list;
 
             for (var i in resList) {
-                var index = Number(i+1);
-                var id = resList[i].apiProjectId;
+                var index = parseInt(i) +1;
+                var id = resList[i].intfProjectId;
                 var name = resList[i].projectName;
                 var description = resList[i].description;
                 var create_time = resList[i].createDtime;
@@ -30,7 +31,7 @@
                 `
                 <tr>
                     <td>${index}</td>
-                    <td><a href='#' onclick='moveAPIPage(${id}, "${name}")'>${name}</a></td>
+                    <td><a href='#' onclick='moveInterfacePage(${id}, "${name}")'>${name}</a></td>
                     <td>${create_time}</td>
                     <td>${modify_time}</td>
                     <td>${description}</td>
@@ -84,11 +85,11 @@
             requestData = JSON.stringify(requestData);
 
             var method = "POST";
-            var api_url = "/central-server/v1/api-service/project";
+            var api_url = "/central-server/v1/data-service/project";
             alert_title = "생성";
             if (isUpdate == "true") {
                 method = "PUT";
-                api_url = "/central-server/v1/api-service/project/" + update_id;
+                api_url = "/central-server/v1/data-service/project/" + update_id;
                 alert_title = "수정";
             }
 
@@ -129,7 +130,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item active" aria-current="page">Home</li>
                     <li class="breadcrumb-item active" aria-current="page">데이터 서비스</li>
-                    <li class="breadcrumb-item active" aria-current="page">Flow 개발</li>
+                    <li class="breadcrumb-item active" aria-current="page">인터페이스 개발</li>
                     <li class="breadcrumb-item active" aria-current="page">프로젝트</li>
                 </ol>
             </nav>

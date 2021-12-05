@@ -23,6 +23,11 @@ public class APIServicePageController {
         return "contents/api-service/development/api/create/index";
     }
 
+    @GetMapping("api-service/development/api/create/module/method")
+    public String APIServiceAPICreateMoudleMethodIndex(Model model) {
+        return "contents/api-service/development/api/create/module/method";
+    }
+
     @GetMapping("/api-service/api-group")
     public String APIServiceAPIGroup(Model model) {
         return "contents/api-service/api-group/index";

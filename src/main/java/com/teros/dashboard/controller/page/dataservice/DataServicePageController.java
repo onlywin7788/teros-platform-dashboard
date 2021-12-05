@@ -13,6 +13,11 @@ public class DataServicePageController {
         return "contents/data-service/development/project/index";
     }
 
+    @GetMapping("/data-service/development/interface")
+    public String DataServiceInterfaceIndex(Model model) {
+        return "contents/data-service/development/interface/index";
+    }
+
     // exec-group
     @GetMapping("/data-development/flow-group")
     public String executionGroup(Model model) {

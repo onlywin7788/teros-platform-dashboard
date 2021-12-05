@@ -19,7 +19,7 @@
             var resList = res.list;
 
             for (var i in resList) {
-                var index = Number(i+1);
+                var index = parseInt(i) +1;
                 var id = resList[i].apiProjectId;
                 var name = resList[i].projectName;
                 var description = resList[i].description;

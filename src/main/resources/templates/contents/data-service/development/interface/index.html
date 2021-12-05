@@ -1,149 +1,155 @@
 <!DOCTYPE html>
-<html
-    xmlns:th="http://www.thymeleaf.org"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     layout:decorate="~{layouts/layout}">
-    <head>
-        <script type="text/javascript">
 
-            function refreshPage(){
-                location.href = "/data-development/flow-dev";
+<head>
+    <script type="text/javascript">
+
+        var projectId = getParam('projectId');
+        var projectName = getParam('projectName');
+
+        function refreshPage() {
+            location.href = "/data-development/flow-dev";
+        }
+
+        function btn_edit(id) {
+            location.href = "/data-service/development/interface/design/" + id;
+        }
+
+        function onCreateList() {
+            res = requestAPI("/central-server/v1/data-service/interface", null, "GET");
+            //resData = jsonObjectParser(res);
+
+            var resList = res.list;
+
+            for (var i in resList) {
+                var id = resList[i].intfId;
+                var name = resList[i].intfName;
+                var description = resList[i].description;
+                var create_time = resList[i].createDtime;
+                var modify_time = resList[i].modifyDtime;
+
+                var append = "";
+                append += "<tr>";
+                append += "<td>" + "<a href='#' onclick='btn_edit(" + id + ")'>" + name + "</a></td>";
+                append += "<td>" + create_time + "</td>";
+                append += "<td>" + modify_time + "</td>";
+                append += "<td>" + description + "</td>";
+                append += "<td>";
+                append += "<span style='cursor:pointer;' data-toggle='dropdown'><i class='fas fa-ellipsis" +
+                    "-v'></i></span>";
+                append += "<div class='dropdown-menu'><a class='dropdown-item' href='#' onclick='btn_edit(" + id + ")'>수정</a>"
+                append += "<a class='dropdown-item' href='#' onclick='openModalDeleteUserGroup(" + id + ")'>삭제</a></div>";
+                append += "</td>";
+                append += "</tr>";
+
+                $("#tbody-data-list").append(append);
             }
+        }
 
-            function btn_edit(id) {
-                location.href = "/data-development/flow-design/" + id;
-            }
+        function check_validation() {
+            // basic info
 
-            function onCreateList() {
-                res = requestAPI("/central-server/v1/flow", null, "GET");
-                //resData = jsonObjectParser(res);
+            var checkArray = [];
+            checkArray.push("text-group-name");
 
-                var resList = res.list;
-
-                for (var i in resList) {
-                    var id = resList[i].flowId;
-                    var name = resList[i].flowName;
-                    var description = resList[i].description;
-                    var create_time = resList[i].createDtime;
-                    var modify_time = resList[i].modifyDtime;
-
-                    var append = "";
-                    append += "<tr>";
-                    append += "<td>" + "<a href='#' onclick='btn_edit(" + id + ")'>" + name + "</a></td>";
-                    append += "<td>" + create_time + "</td>";
-                    append += "<td>" + modify_time + "</td>";
-                    append += "<td>" + description + "</td>";
-                    append += "<td>";
-                    append += "<span style='cursor:pointer;' data-toggle='dropdown'><i class='fas fa-ellipsis" +
-                            "-v'></i></span>";
-                    append += "<div class='dropdown-menu'><a class='dropdown-item' href='#' onclick='btn_edit(" + id + ")'>수정</a>"
-                    append += "<a class='dropdown-item' href='#' onclick='openModalDeleteUserGroup(" + id + ")'>삭제</a></div>";
-                    append += "</td>";
-                    append += "</tr>";
-
-                    $("#tbody-data-list").append(append);
-                }
-            }
-
-            function check_validation() {
-                // basic info
-
-                var checkArray = [];
-                checkArray.push("text-group-name");
-
-                var error = 0;
-                for (var i = 0; i < checkArray.length; i++) {
-                    checkId = checkArray[i];
-                    if ($("#" + checkId).val().length == 0) {
-                        error = 1;
-                    }
-
-                }
-
-                if (error == 1) 
-                    return false;
-                return true;
-            }
-
-            function dataSubmit(isUpdate) {
-                if (check_validation() == false) {
-                    alert('입력하지 않은 정보가 존재합니다.');
-                    return;
+            var error = 0;
+            for (var i = 0; i < checkArray.length; i++) {
+                checkId = checkArray[i];
+                if ($("#" + checkId).val().length == 0) {
+                    error = 1;
                 }
 
-                var requestData = {
-                    "userGroupName": $("#text-group-name").val(),
-                    "description": $("#text-group-description").val()
-                };
-                requestData = JSON.stringify(requestData);
+            }
 
-                var method = "POST";
-                var api_url = "/central-server/v1/user-group";
-                alert_title = "생성";
-                if (isUpdate == "true") {
-                    method = "PUT";
-                    api_url = "/central-server/v1/user-group/" + update_id;
-                    alert_title = "수정";
-                }
+            if (error == 1)
+                return false;
+            return true;
+        }
 
-                res = requestAPI(api_url, requestData, method);
+        function dataSubmit(isUpdate) {
+            if (check_validation() == false) {
+                alert('입력하지 않은 정보가 존재합니다.');
+                return;
+            }
 
-                lastID = 0;
-                if (isUpdate == "1") 
-                    lastID = update_id;
-                else 
-                    lastID = res.data.userGroupId;
-                
+            var requestData = {
+                "userGroupName": $("#text-group-name").val(),
+                "description": $("#text-group-description").val()
+            };
+            requestData = JSON.stringify(requestData);
+
+            var method = "POST";
+            var api_url = "/central-server/v1/user-group";
+            alert_title = "생성";
+            if (isUpdate == "true") {
+                method = "PUT";
+                api_url = "/central-server/v1/user-group/" + update_id;
+                alert_title = "수정";
+            }
+
+            res = requestAPI(api_url, requestData, method);
+
+            lastID = 0;
+            if (isUpdate == "1")
+                lastID = update_id;
+            else
+                lastID = res.data.userGroupId;
+
+            refreshPage();
+
+        }
+
+        function openModalDataUserGroup(id) {
+            if (id == 0) {
+                $("#trigger-modal-data-user-group").click();
+            }
+            else {
+                $("#trigger-modal-data-user-group").click();
+            }
+        }
+
+        function openModalDeleteUserGroup(id) {
+            if (confirm("해당 Flow 를 삭제하시겠습니까?") == true) {
+                res = requestAPI("/central-server/v1/user-group/" + id, null, "DELETE");
                 refreshPage();
-
             }
 
-            function openModalDataUserGroup(id){
-                if(id == 0){
-                    $("#trigger-modal-data-user-group").click();
-                }
-                else{
-                    $("#trigger-modal-data-user-group").click();   
-                }
-            }
+        }
 
-            function openModalDeleteUserGroup(id){
-                if (confirm("해당 Flow 를 삭제하시겠습니까?") == true) {
-                    res = requestAPI("/central-server/v1/user-group/" + id, null, "DELETE");
-                    refreshPage();
-                }
-                
-            }
 
-            
-            function moveFlowDesign(){
-                location.href = "/data-development/flow-design/create";
-            }
+        function moveDesign() {
+            location.href = "/data-service/development/interface/design";
+        }
 
-            $(document).ready(function () {
-                $("#btn-data-insert").click(function () {
-                    dataSubmit(false);
-                });
-
-                onCreateList();
-
+        $(document).ready(function () {
+            $("#btn-data-insert").click(function () {
+                dataSubmit(false);
             });
-        </script>
-    </head>
 
-    <div layout:fragment="content">
-        <div class="wrapper">
-            <!-- Content Wrapper. Contains page content -->
-            <div class="content-wrapper">
-                <nav aria-label="breadcrumb" class="mb-4">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item active" aria-current="page">Home</li>
-                        <li class="breadcrumb-item active" aria-current="page">데이터 개발</li>
-                        <li class="breadcrumb-item active" aria-current="page">플로우 개발</li>
-                    </ol>
-                </nav>
+            onCreateList();
 
-  
+        });
+    </script>
+</head>
+
+<div layout:fragment="content">
+    <div class="wrapper">
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item active" aria-current="page">Home</li>
+                    <li class="breadcrumb-item active" aria-current="page">데이터 개발</li>
+                    <li class="breadcrumb-item active" aria-current="page">인터페이스 개발</li>
+                </ol>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item active" aria-current="page">PROJECT</li>
+                    <li class="breadcrumb-item active" aria-current="page"><script>document.write(projectName)</script></li>
+                </ol>
+            </nav>
+
+
             <!---------------------- Main content ---------------------->
             <section class="content">
                 <div class="container-fluid">
@@ -156,11 +162,8 @@
                                 <div class="card card-primary card-outline">
                                     <div class="card-header">
 
-                                        <input
-                                            type="button"
-                                            class="btn btn-xs btn-primary btn-flat"
-                                            value="플로우 생성"
-                                            onclick="moveFlowDesign()"/>
+                                        <input type="button" class="btn btn-xs btn-primary btn-flat" value="인터페이스 생성"
+                                            onclick="moveDesign()" />
 
                                         <div class="card-tools">
 
@@ -184,7 +187,7 @@
 
                                                 <thead>
                                                     <tr>
-                                                        <td class="mailbox-subject" style="width: 300px">플로우명</td>
+                                                        <td class="mailbox-subject" style="width: 300px">인터페이스명</td>
                                                         <td style="width: 50px">생성 일시</td>
                                                         <td style="width: 50px">수정 일시</td>
                                                         <td>설명</td>
@@ -208,10 +211,11 @@
                         <!-- /.row -->
                     </div>
                     <!-- /.container-fluid -->
-                </section>
-                <!-- /.content -->
-            </div>
-            <!-- /.content-wrapper -->
+            </section>
+            <!-- /.content -->
         </div>
+        <!-- /.content-wrapper -->
     </div>
+</div>
+
 </html>

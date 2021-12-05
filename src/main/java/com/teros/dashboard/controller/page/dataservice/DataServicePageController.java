@@ -9,19 +9,37 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class DataServicePageController {
 
     @GetMapping("/data-service/development/project")
-    public String DataServiceProjectIndex(Model model) {
+    public String projectIndex(Model model) {
         return "contents/data-service/development/project/index";
     }
 
     @GetMapping("/data-service/development/interface")
-    public String DataServiceInterfaceIndex(Model model) {
+    public String interfaceIndex(Model model) {
         return "contents/data-service/development/interface/index";
     }
 
-    // exec-group
-    @GetMapping("/data-development/flow-group")
-    public String executionGroup(Model model) {
-        return "contents/data_dev/flow_group/flow_group";
+    @GetMapping("/data-service/development/interface/design")
+    public String DataServiceInterfaceDesignIndex(Model model) {
+        return "contents/data-service/development/interface/design/index";
+    }
+
+    @GetMapping("/data-service/development/interface/design/{id}")
+    public String interfaceDesignUpdateIndex(Model model, @PathVariable long id) {
+        model.addAttribute("id", id);
+        model.addAttribute("update", 1);
+        return "contents/data-service/development/interface/design/index";
+    }
+
+    // interface-group-management
+    @GetMapping("/data-service/interface-group")
+    public String interfaceGroup(Model model) {
+        return "contents/data-service/group/management/index";
+    }
+
+    // interface-group-mapping
+    @GetMapping("/data-service/interface-group-map")
+    public String interfaceGroupMap(Model model) {
+        return "contents/data-service/group/mapping/index";
     }
 
     // exec-group
@@ -40,13 +58,6 @@ public class DataServicePageController {
     @GetMapping("/data-development/flow-design/create")
     public String flowDDesignCreate(Model model) {
         model.addAttribute("update", 0);
-        return "contents/data_dev/flow_dev/design/index";
-    }
-
-    @GetMapping("/data-development/flow-design/{id}")
-    public String flowDesignUpdate(Model model, @PathVariable long id) {
-        model.addAttribute("id", id);
-        model.addAttribute("update", 1);
         return "contents/data_dev/flow_dev/design/index";
     }
 

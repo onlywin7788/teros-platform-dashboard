@@ -9,6 +9,11 @@
             var projectId = getParam('projectId');
             var projectName = getParam('projectName');
 
+            function btn_create()
+            {
+                location.href = `/api-service/development/api/create?projectId=${projectId}&projectName=${projectName}`;
+            }
+
             function btn_edit(id) {
                 location.href = "/api-development/api/contents/" + id;
             }
@@ -52,7 +57,7 @@
 
             $(document).ready(function () {
                 $("#btn-api-create").click(function () {
-                    location.href = "/APIService/development/api/create";
+                    btn_create();
                 });
 
                 onCreateList();

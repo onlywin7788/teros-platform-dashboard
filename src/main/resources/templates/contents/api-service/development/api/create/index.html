@@ -15,6 +15,9 @@
             var update_id = "[[${id}]]";
             /*]]>*/
 
+            var projectId = getParam('projectId');
+            var projectName = getParam('projectName');
+
             var method_menu_id_array = [];
             var method_menu_id = 0;
             var spanIDPrefix = "method-menu_";
@@ -109,7 +112,7 @@
                 send_insert_append(lastID);
 
                 if (!alert("API 가 정상적으로 " + alert_title + "되었습니다.")) {
-                    location.href = "/api-development/api";
+                   location.href = `/api-service/development/api?projectId=${projectId}&projectName=${projectName}`;
                 }
             }
 
@@ -157,7 +160,7 @@
             }
 
             function appendMethodMenu() {
-                var html = requestHTML("/APIService/development/api/create/module/method");
+                var html = requestHTML("/api-service/development/api/create/module/method");
                 method_menu_id++;
 
                 var spanID = spanIDPrefix + method_menu_id;
@@ -251,6 +254,10 @@
                         <li class="breadcrumb-item active" aria-current="page">Home</li>
                         <li class="breadcrumb-item active" aria-current="page">API 개발</li>
                         <li class="breadcrumb-item active" aria-current="page">API</li>
+                    </ol>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item active" aria-current="page">PROJECT</li>
+                        <li class="breadcrumb-item active" aria-current="page"><script>document.write(projectName)</script></li>
                     </ol>
                 </nav>
                 

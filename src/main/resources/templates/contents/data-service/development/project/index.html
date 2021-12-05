@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layouts/layout}">
+
+<head>
+    <script type="text/javascript">
+        function moveAPIPage(projectId, projectName) {
+            location.href = `/api-service/development/api?projectId=${projectId}&projectName=${projectName}`;
+        }
+
+        function refreshPage(){
+            history.go(0)
+        }
+
+        function onCreateList() {
+            res = requestAPI("/central-server/v1/api-service/project", null, "GET");
+            //resData = jsonObjectParser(res);
+
+            var resList = res.list;
+
+            for (var i in resList) {
+                var index = Number(i+1);
+                var id = resList[i].apiProjectId;
+                var name = resList[i].projectName;
+                var description = resList[i].description;
+                var create_time = resList[i].createDtime;
+                var modify_time = resList[i].modifyDtime;
+
+                var contents =
+                `
+                <tr>
+                    <td>${index}</td>
+                    <td><a href='#' onclick='moveAPIPage(${id}, "${name}")'>${name}</a></td>
+                    <td>${create_time}</td>
+                    <td>${modify_time}</td>
+                    <td>${description}</td>
+                    <td>
+                        <span style='cursor:pointer;' data-toggle='dropdown'><i class='fas fa-ellipsis-v'></i></span>
+                        <div class='dropdown-menu'>
+                            <a class='dropdown-item'>수정</a>
+                            <a class='dropdown-item'>삭제</a>
+                        </div>
+                    </td>
+                </tr>
+                `
+
+                $("#tbody-list").append(contents);
+            }
+        }
+
+        function check_validation() {
+            // basic info
+
+            var checkArray = [];
+            checkArray.push("text-modal-project-name");
+            checkArray.push("text-modal-project-desc");
+
+            var error = 0;
+            for (var i = 0; i < checkArray.length; i++) {
+                checkId = checkArray[i];
+                if ($("#" + checkId).val().length == 0) {
+                    error = 1;
+                }
+
+            }
+
+            if (error == 1)
+                return false;
+            return true;
+        }
+
+        function dataSubmit(isUpdate) {
+
+
+            if (check_validation() == false) {
+                alert('입력하지 않은 정보가 존재합니다.');
+                return;
+            }
+
+            var requestData = {
+                "projectName": $("#text-modal-project-name").val(),
+                "description": $("#text-modal-project-desc").val()
+            };
+            requestData = JSON.stringify(requestData);
+
+            var method = "POST";
+            var api_url = "/central-server/v1/api-service/project";
+            alert_title = "생성";
+            if (isUpdate == "true") {
+                method = "PUT";
+                api_url = "/central-server/v1/api-service/project/" + update_id;
+                alert_title = "수정";
+            }
+
+            res = requestAPI(api_url, requestData, method);
+
+            lastID = 0;
+            if (isUpdate == "1")
+                lastID = update_id;
+
+            refreshPage();
+        }
+
+        function openModalDataProject(id) {
+            if (id == 0) {
+                $("#trigger-modal-data-project").click();
+            }
+            else {
+                $("#trigger-modal-data-project").click();
+            }
+        }
+
+        $(document).ready(function () {
+                $("#btn-data-insert").click(function () {
+                    dataSubmit(false);
+                });
+                onCreateList();
+            });
+
+    </script>
+</head>
+
+<div layout:fragment="content">
+    <div class="wrapper">
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item active" aria-current="page">Home</li>
+                    <li class="breadcrumb-item active" aria-current="page">데이터 서비스</li>
+                    <li class="breadcrumb-item active" aria-current="page">Flow 개발</li>
+                    <li class="breadcrumb-item active" aria-current="page">프로젝트</li>
+                </ol>
+            </nav>
+
+
+            <!-- New Modal -->
+            <div class="modal fade" id="modal-data-project" tabindex="-1" role="dialog" data-backdrop="static"
+                data-keyboard="false">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h6 class="modal-title">프로젝트 생성</h6>
+                            <button type="button" class="close" data-dismiss="modal">×</button>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <form role="form">
+                                <div class="card-body">
+
+                                    <div class="form-group input-group-sm">
+                                        <label>프로젝트명</label>
+                                        <input type="text" class="form-control" id="text-modal-project-name">
+                                    </div>
+
+                                    <div class="form-group input-group-sm">
+                                        <label>설명</label>
+                                        <textarea class="form-control" id="text-modal-project-desc" rows="5"
+                                            style="resize: none;"></textarea>
+                                    </div>
+
+                                </div>
+                            </form>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary btn-sm btn-flat"
+                                data-dismiss="modal">닫기</button>
+                            <button type="button" class="btn btn-primary btn-sm btn-flat"
+                                id="btn-data-insert">확인</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- trigger modal event -->
+            <input type="hidden" id="trigger-modal-data-project" data-toggle="modal"
+                data-target="#modal-data-project" />
+
+            <!---------------------- Main content ---------------------->
+            <section class="content">
+                <div class="container-fluid">
+
+                    <div class="row">
+                        <div class="col-12">
+
+                            <div class="col-md-12">
+
+                                <div class="card card-primary card-outline">
+                                    <div class="card-header">
+
+                                        <input type="button" class="btn btn-xs btn-primary btn-flat" value="프로젝트 생성"
+                                            onclick="openModalDataProject(0)" />
+
+                                        <div class="card-tools">
+                                            <div class="input-group input-group-sm">
+
+                                                <input type="text" class="form-control" placeholder="">
+                                                <div class="input-group-append">
+                                                    <div class="btn btn-primary">
+                                                        <i class="fas fa-search"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- /.card-tools -->
+                                    </div>
+                                    <!-- /.card-header -->
+                                    <div class="card-body table-responsive p-0">
+
+                                        <div class="table-responsive mailbox-messages">
+                                            <table class="table table-head-fixed text-nowrap">
+
+                                                <thead>
+                                                    <tr>
+                                                        <td style="width: 10px">#</td>
+                                                        <td class="mailbox-subject">프로젝트명</td>
+                                                        <td style="width: 50px">생성 일시</td>
+                                                        <td style="width: 50px">수정 일시</td>
+                                                        <td>설명</td>
+                                                        <td style="width: 10px"></td>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody id="tbody-list"></tbody>
+
+                                                </tbody>
+                                            </table>
+                                            <!-- /.table -->
+                                        </div>
+                                        <!-- /.mail-box-messages -->
+                                    </div>
+                                    <!-- /.card-body -->
+                                    <!-- /.card -->
+                                </div>
+                                <!-- /.card -->
+                            </div>
+                            <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
+                    </div>
+                    <!-- /.container-fluid -->
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+    </div>
+</div>
+
+</html>

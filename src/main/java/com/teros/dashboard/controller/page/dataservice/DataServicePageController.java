@@ -1,4 +1,4 @@
-package com.teros.dashboard.controller.page.data_dev;
+package com.teros.dashboard.controller.page.dataservice;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -6,12 +6,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
-public class FlowDevPageController {
+public class DataServicePageController {
 
-    // flow-dev
-    @GetMapping("/data-development/flow-dev")
-    public String flowDev(Model model) {
-        return "contents/data_dev/flow_dev/index";
+    @GetMapping("/data-service/development/project")
+    public String DataServiceProjectIndex(Model model) {
+        return "contents/data-service/development/project/index";
     }
 
     // exec-group

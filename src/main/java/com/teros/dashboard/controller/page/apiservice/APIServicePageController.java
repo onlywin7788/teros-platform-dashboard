@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class APIServicePageController {
 
-    // API Development
     @GetMapping("/api-service/development/project")
     public String APIServiceProjectIndex(Model model) {
         return "contents/api-service/development/project/index";
@@ -24,13 +23,13 @@ public class APIServicePageController {
         return "contents/api-service/development/api/create/index";
     }
 
-    @GetMapping("/api-service/group")
+    @GetMapping("/api-service/api-group")
     public String APIServiceAPIGroup(Model model) {
-        return "contents/api-service/group/index";
+        return "contents/api-service/api-group/index";
     }
 
-    @GetMapping("/api-service/policy")
+    @GetMapping("/api-service/api-policy")
     public String APIServiceAPIPolicy(Model model) {
-        return "contents/api-service/policy/index";
+        return "contents/api-service/api-policy/index";
     }
 }

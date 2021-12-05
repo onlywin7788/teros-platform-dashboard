@@ -45,15 +45,14 @@ public class DataServicePageController {
         return "contents/data_dev/flow_dev/design/index";
     }
 
-    // connector
-    @GetMapping("/data-development/connector")
-    public String flowConnector(Model model) {
-        return "contents/data_dev/connector/index";
+    @GetMapping("/data-service/connector")
+    public String APIServiceAPIGroup(Model model) {
+        return "contents/data-service/connector/index";
     }
 
-    // data-set
-    @GetMapping("/data-development/data-set")
-    public String flowDataSet(Model model) {
-        return "contents/data_dev/data_set/index";
+    @GetMapping("/data-service/data-set")
+    public String APIServiceAPIPolicy(Model model) {
+        return "contents/data-service/data-set/index";
     }
+
 }

@@ -115,7 +115,6 @@ public class RestRemoteController {
 
     public ResponseEntity<String> remoteExecute(String url, HttpMethod method, HttpHeaders headers, String payload) throws Exception {
 
-
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity<String> entity = new HttpEntity<String>(payload, headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, method, entity, String.class);

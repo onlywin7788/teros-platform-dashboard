@@ -23,6 +23,14 @@ public class APIServicePageController {
         return "contents/api-service/development/api/create/index";
     }
 
+    @GetMapping("/api-service/development/api/update/{id}")
+    public String APIServiceAPIUpdateIndex(Model model, @PathVariable long id) {
+        model.addAttribute("id", id);
+        model.addAttribute("update", 1);
+
+        return "contents/api-service/development/api/create/index";
+    }
+
     @GetMapping("api-service/development/api/create/module/method")
     public String APIServiceAPICreateMoudleMethodIndex(Model model) {
         return "contents/api-service/development/api/create/module/method";

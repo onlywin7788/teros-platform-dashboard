@@ -39,6 +39,24 @@
 
                                                     <table class="table">
                                                         <tbody>
+
+                                                            <tr>
+                                                                <td style="background-color: #f4f4f4;">
+                                                                    <i class="nav-icon fas fa-database mr-2"
+                                                                        style="font-size: 0.8rem;"></i>
+                                                                    파일 시스템
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <div class="ml-3 mr-2" style="cursor:pointer;"
+                                                                        draggable="true" ondragstart="drag(event)"
+                                                                        data-node="file">
+                                                                        File (TXT, CSV)
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+
                                                             <tr>
                                                                 <td style="background-color: #f4f4f4;">
                                                                     <i class="nav-icon fas fa-database mr-2"
@@ -143,26 +161,8 @@
                                                                 <td>
                                                                     <div class="ml-3 mr-2" style="cursor:pointer;"
                                                                         draggable="true" ondragstart="drag(event)"
-                                                                        data-node="custom">
-                                                                        Custom Node
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <div class="ml-3 mr-2" style="cursor:pointer;"
-                                                                        draggable="true" ondragstart="drag(event)"
                                                                         data-node="transform">
                                                                         Transform
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <div class="ml-3 mr-2" style="cursor:pointer;"
-                                                                        draggable="true" ondragstart="drag(event)"
-                                                                        data-node="router">
-                                                                        Router
                                                                     </div>
                                                                 </td>
                                                             </tr>
@@ -533,6 +533,16 @@
 
             /************* node-define *************/
 
+            // file
+            case 'file':
+                var nodeContents = `
+            <div>
+                <div class="title-box">File</div>
+            </div>
+            `;
+                editor.addNode('FILE', 1, 1, pos_x, pos_y, 'FILE', {}, nodeContents);
+                break;
+
             // database
 
             case 'oracle':
@@ -605,18 +615,6 @@
                 editor.addNode('SOAP', 1, 1, pos_x, pos_y, 'SOAP', {}, nodeContents);
                 break;
 
-            // data transform
-            case 'custom':
-                var nodeContents = `
-            <div>
-                <div class="title-box">Custom Node</div>
-                <div class="box">
-                    <input type="button" class="btn btn-xs btn-flat" value="설정 "></input>
-                </div>
-            </div>
-            `;
-                editor.addNode('CUSTOM', 1, 1, pos_x, pos_y, 'CUSTOM', {}, nodeContents);
-                break;
             case 'transform':
                 var nodeContents = `
             <div>
@@ -627,17 +625,6 @@
             </div>
             `;
                 editor.addNode('TRANSFORM', 1, 1, pos_x, pos_y, 'TRANSFORM', {}, nodeContents);
-                break;
-            case 'router':
-                var nodeContents = `
-            <div>
-                <div class="title-box">Router</div>
-                <div class="box">
-                    <input type="button" class="btn btn-xs btn-flat" value="룰 지정"></input>
-                </div>
-            </div>
-            `;
-                editor.addNode('ROUTER', 1, 3, pos_x, pos_y, 'ROUTER', {}, nodeContents);
                 break;
 
             /************* end of node-define *************/

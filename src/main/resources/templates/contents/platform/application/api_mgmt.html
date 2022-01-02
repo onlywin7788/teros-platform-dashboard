@@ -135,7 +135,7 @@
             var host = targetManagerHost;
             var port = targetManagerPort;
             
-            result = requestAPI(`/central-server/v1/internal/appm/app/deploy?host=${host}&port=${port}&apiId=${apiId}`, null, "POST");
+            result = requestAPI(`/central-server/v1/internal/appm/api/deploy?host=${host}&port=${port}&apiId=${apiId}`, null, "POST");
         }
 
         function showManagerDetail(id, name, host, port) {

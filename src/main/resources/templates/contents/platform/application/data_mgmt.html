@@ -150,15 +150,13 @@
             // tbody-api-list
             $("#tbody-api-list").html("");
 
-            res = requestAPI(`${centralServerBaseURI}/api`);
+            res = requestAPI(`${centralServerBaseURI}/data-service/interface`);
             var resList = res.list;
             
             for (var i in resList) {
                 var index = parseInt(i) +1;
-                var id = resList[i].apiId;
-                var name = resList[i].apiName;
-                var version = resList[i].version;
-                var targetUrl = resList[i].targetUrl;
+                var id = resList[i].intfId;
+                var name = resList[i].intfName;
                 var description = resList[i].description;
                 var create_time = resList[i].createDtime;
                 var modify_time = resList[i].modifyDtime;
@@ -169,7 +167,6 @@
                 <tr>
                     <td>${index}</td>
                     <td>${name}</td>
-                    <td>${version}</td>
                     <td>${create_time}</td>
                     <td>${modify_time}</td>
                     <td>구현중</td>";
@@ -515,11 +512,10 @@
                                                                 <tr
                                                                     style="background-color:#f3f3f3; text-align: center; font-weight: bold;">
                                                                     <td style="width: 10px">#</td>
-                                                                    <td style="width: 250px">인터페이스명</td>
-                                                                    <td style="width: 250px">인터페이스 버전</td>
+                                                                    <td>인터페이스명</td>
                                                                     <td style="width: 50px">생성 일시</td>
                                                                     <td style="width: 50px">수정 일시</td>
-                                                                    <td>상태</td>
+                                                                    <td style="width: 100px">상태</td>
                                                                     <td style="width: 10px"></td>
                                                                 </tr>
                                                             </thead>

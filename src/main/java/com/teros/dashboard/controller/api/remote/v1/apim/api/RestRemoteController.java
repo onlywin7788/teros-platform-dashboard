@@ -132,9 +132,9 @@ public class RestRemoteController {
         if (requestMethod.equals("POST") == true) {
 
         }
-        if (requestMethod.equals("PUT") == true) {
+        if (requestMethod.equals("POST") == true || requestMethod.equals("PUT") == true) {
 
-            if (urlPath.contains("/central-server/v1/flow/config/") == true) {
+            if (urlPath.contains("/central-server/v1/data-service/interface") == true) {
                 contents = getFlowConfig(contents);
             }
         }
